@@ -1,0 +1,15 @@
+{
+  "FILENAME": "app.properties",
+  "file_format_text": "Choose File Format:",
+  "name_format_text": "Choose Name Format:",
+  "start_index_text": "Start Index:",
+  "input_path_text": "Input Path:",
+  "output_path_text": "Output Path:",
+  "small_text_field_pref_width": 50,
+  "long_text_field_pref_width": 300,
+  "positive_number_tooltip": "Điền số nguyên dương",
+  "select_folder_button_text": "Select Folder",
+  "open_folder_button_text": "Open Folder",
+  "default_spacing": 10,
+  "default_padding": 10
+}
