@@ -32,7 +32,7 @@ public class RenameVBox extends VBox {
         this.progressBar = new ProgressBar(0);
         this.progressLabel = new Label("");
 
-        runButton.setOnAction(e -> {
+        runButton.setOnAction(_ -> {
             try {
                 renameImage(this);
             } catch (Exception exception) {
@@ -62,7 +62,7 @@ public class RenameVBox extends VBox {
             protected Void call() {
 
 
-                if (inputPath.equals("") || outputPath.equals("")) {
+                if (inputPath.isEmpty() || outputPath.isEmpty()) {
                     updateMessage("Please choose input path and output path");
                     System.out.print("Please choose input path and output path");
                     return null;
@@ -76,7 +76,7 @@ public class RenameVBox extends VBox {
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = Reusable.filterFiles(files);
 
-                if (fileList.size() == 0) {
+                if (fileList.isEmpty()) {
                     updateMessage("Found no image file in the input folder");
                     return null;
                 }

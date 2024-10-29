@@ -25,8 +25,7 @@ public class Reusable {
 //    private static final String FILENAME = jsonObject.getString("FILENAME");
 
 
-    static String FILENAME = "app.properties";
-
+    static final String FILENAME = "app.properties";
     static String file_format_text = "Choose File Format:";
     static String name_format_text = "Choose Name Format:";
     static String start_index_text = "Start Index:";
@@ -56,10 +55,7 @@ public class Reusable {
         try {
             Integer.parseInt(string);
             int i = Integer.parseInt(string);
-            if (i < 0) {
-                return false;
-            }
-            return true;
+            return i >= 0;
         } catch (Exception e) {
             System.out.print("Not an positive integer number");
             return false;
@@ -69,11 +65,8 @@ public class Reusable {
     public static boolean isValidDouble(String string) {
         try {
             Double.parseDouble(string);
-            Double d = Double.parseDouble(string);
-            if (d < 0 || d > 1) {
-                return false;
-            }
-            return true;
+            double d = Double.parseDouble(string);
+            return !(d < 0) && !(d > 1);
         } catch (Exception e) {
             System.out.print("Not an valid double number");
             return false;
@@ -85,7 +78,7 @@ public class Reusable {
             Properties properties = new Properties();
             properties.load(new FileInputStream(FILENAME));
             return properties.getProperty(key);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
