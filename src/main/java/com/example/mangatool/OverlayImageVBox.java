@@ -158,8 +158,7 @@ public class OverlayImageVBox extends VBox {
 
                 thisTopImageHeight = Integer.parseInt(topImageHeight);
                 thisTopImageOpacity = (float) Double.parseDouble(topImageOpacity);
-                thisTopImageX = Integer.parseInt(topImageX);
-                thisTopImageY = Integer.parseInt(topImageY);
+
 
                 File imgFile = new File(imgPath);
                 String fileName = imgFile.getName();
@@ -179,7 +178,7 @@ public class OverlayImageVBox extends VBox {
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = Reusable.filterFiles(files);
 
-                if (fileList.size() == 0) {
+                if (fileList.isEmpty()) {
                     updateMessage("Found no file in the input folder");
                     return null;
                 }
@@ -197,11 +196,14 @@ public class OverlayImageVBox extends VBox {
                         Graphics2D g = combinedImg.createGraphics();
                         g.drawImage(originalImage, 0, 0, null);
 
-                        float opacity = thisTopImageOpacity;
                         double ratio = ((double) topImage.getWidth()) / topImage.getHeight();
                         int thisTopImageWidth = (int) (ratio * thisTopImageHeight);
 
-                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+                        //originalImageWidth-thisTopImageWidth
+                        thisTopImageX = originalImage.getWidth() - thisTopImageWidth - Integer.parseInt(topImageX);
+                        thisTopImageY = originalImage.getHeight() - thisTopImageHeight - Integer.parseInt(topImageY);
+
+                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, thisTopImageOpacity));
                         g.drawImage(topImage, thisTopImageX, thisTopImageY, thisTopImageWidth, thisTopImageHeight, null);
                         g.dispose();
 
