@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import org.json.JSONObject;
+
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
@@ -36,7 +37,6 @@ public class FormatAndFolderChooserVBox extends VBox {
 //    static JSONObject jsonObject = new JSONObject(jsonFile);
 
 
-
     private static final String FILENAME = Reusable.FILENAME;
     public TextField inputPathTextField;
     public TextField outputPathTextField;
@@ -55,12 +55,8 @@ public class FormatAndFolderChooserVBox extends VBox {
 
 
     public FormatAndFolderChooserVBox() {
-        ObservableList<String> formats = FXCollections.observableArrayList(
-                "jpg", "png", "bmp", "tiff", "webp"
-        );
-        ObservableList<String> nameFormats = FXCollections.observableArrayList(
-                "1", "2", "3", "4", "5"
-        );
+        ObservableList<String> formats = FXCollections.observableArrayList("jpg", "png", "bmp", "tiff", "webp");
+        ObservableList<String> nameFormats = FXCollections.observableArrayList("1", "2", "3", "4", "5");
 
         this.fileFormatCombo = new ComboBox<>(formats);
         this.fileFormatCombo.getSelectionModel().selectFirst();
@@ -198,7 +194,7 @@ public class FormatAndFolderChooserVBox extends VBox {
 
     }
 
-    public void openFolder (TextField textField) {
+    public void openFolder(TextField textField) {
         String pathToOpen = textField.getText();
         if (pathToOpen.isEmpty()) {
             System.out.print("Folder not found");
@@ -215,7 +211,7 @@ public class FormatAndFolderChooserVBox extends VBox {
 
     public static String setTextFormatNotification(String nameFormat, String fileFormat, String startIndex) {
         int formatCounter = 0;
-        if (Reusable.isPositiveInteger(startIndex)){
+        if (Reusable.isPositiveInteger(startIndex)) {
             formatCounter = Integer.parseInt(startIndex);
         }
         String res;
@@ -223,7 +219,6 @@ public class FormatAndFolderChooserVBox extends VBox {
 
         return res;
     }
-
 
 
 }

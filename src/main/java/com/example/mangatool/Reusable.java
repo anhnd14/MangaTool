@@ -34,6 +34,7 @@ public class Reusable {
     static String top_image_text = "Image Path:";
     static String top_image_height_text = "Height";
     static String top_image_opacity_text = "Opacity:";
+    static String top_image_position_text = "Position:";
     static String top_image_x_coordinate_text = "X:";
     static String top_image_y_coordinate_text = "Y:";
 

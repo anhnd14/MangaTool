@@ -1,5 +1,7 @@
 package com.example.mangatool;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -36,6 +38,7 @@ public class OverlayImageVBox extends VBox {
     public TextField topImageOpacityTextField;
     public TextField topImageXCoordinateTextField;
     public TextField topImageYCoordinateTextField;
+    public ComboBox<String> topImagePositionCombo;
 
 
     int defaultSpacing = Reusable.default_spacing;
@@ -47,6 +50,8 @@ public class OverlayImageVBox extends VBox {
     public OverlayImageVBox() {
 
         formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+
+        ObservableList<String> position = FXCollections.observableArrayList("Top Left", "Top Right", "Bottom Left", "Bottom Right");
 
         Text topImageTitle = new Text(Reusable.top_image_text);
         topImagePathTextField = new TextField();
@@ -70,6 +75,10 @@ public class OverlayImageVBox extends VBox {
         topImageOpacityTextField = new TextField("0.5");
         topImageOpacityTextField.setPrefWidth(smallTextFieldPrefWidth);
         topImageOpacityTextField.setTooltip(new Tooltip(Reusable.valid_double_tooltip));
+
+        Text topImagePositionTitle = new Text(Reusable.top_image_position_text);
+        this.topImagePositionCombo = new ComboBox<>(position);
+        this.topImagePositionCombo.getSelectionModel().select(3);
 
         Text topImageXCoordinateTitle = new Text(Reusable.top_image_x_coordinate_text);
         Text topImageYCoordinateTitle = new Text(Reusable.top_image_y_coordinate_text);
@@ -95,7 +104,7 @@ public class OverlayImageVBox extends VBox {
         HBox topImageCoordinateHBox = new HBox(defaultSpacing);
         topImageCoordinateHBox.setSpacing(defaultSpacing);
         topImageCoordinateHBox.setPadding(new Insets(defaultPadding));
-        topImageCoordinateHBox.getChildren().addAll(topImageXCoordinateTitle, topImageXCoordinateTextField, topImageYCoordinateTitle, topImageYCoordinateTextField);
+        topImageCoordinateHBox.getChildren().addAll(topImagePositionTitle, topImagePositionCombo, topImageXCoordinateTitle, topImageXCoordinateTextField, topImageYCoordinateTitle, topImageYCoordinateTextField);
         topImageCoordinateHBox.setAlignment(Pos.BASELINE_CENTER);
 
         this.runButton = new Button("Run");
@@ -136,8 +145,8 @@ public class OverlayImageVBox extends VBox {
 
                 float thisTopImageOpacity;
                 int thisTopImageHeight;
-                int thisTopImageX;
-                int thisTopImageY;
+                int thisTopImageX = 0;
+                int thisTopImageY = 0;
 
                 if (inputPath.equals("") || outputPath.equals("") || imgPath.equals("")) {
                     updateMessage("Please choose input path, output path and top image");
@@ -200,8 +209,32 @@ public class OverlayImageVBox extends VBox {
                         int thisTopImageWidth = (int) (ratio * thisTopImageHeight);
 
                         //originalImageWidth-thisTopImageWidth
-                        thisTopImageX = originalImage.getWidth() - thisTopImageWidth - Integer.parseInt(topImageX);
-                        thisTopImageY = originalImage.getHeight() - thisTopImageHeight - Integer.parseInt(topImageY);
+
+                        System.out.print(topImagePositionCombo.getSelectionModel());
+                        String expectedPosition = topImagePositionCombo.getValue();
+                        switch (expectedPosition){
+                            case "Top Left": {
+                                thisTopImageX = Integer.parseInt(topImageX);
+                                thisTopImageY = Integer.parseInt(topImageY);
+                                break;
+                            }
+                            case "Top Right": {
+                                thisTopImageX = originalImage.getWidth() - thisTopImageWidth - Integer.parseInt(topImageX);
+                                thisTopImageY = Integer.parseInt(topImageY);
+                                break;
+                            }
+                            case "Bottom Left": {
+                                thisTopImageX = Integer.parseInt(topImageX);
+                                thisTopImageY = originalImage.getHeight() - thisTopImageHeight - Integer.parseInt(topImageY);
+                                break;
+                            }
+                            case "Bottom Right": {
+                                thisTopImageX = originalImage.getWidth() - thisTopImageWidth - Integer.parseInt(topImageX);
+                                thisTopImageY = originalImage.getHeight() - thisTopImageHeight - Integer.parseInt(topImageY);
+                                break;
+                            }
+                        }
+
 
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, thisTopImageOpacity));
                         g.drawImage(topImage, thisTopImageX, thisTopImageY, thisTopImageWidth, thisTopImageHeight, null);
@@ -268,6 +301,4 @@ public class OverlayImageVBox extends VBox {
         }
 
     }
-
-
 }
