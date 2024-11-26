@@ -9,17 +9,20 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static com.example.mangatool.Reusable.saveImage;
 
-public class ImageSplitVBox extends VBox {
-
+public class ToGrayScaleVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
@@ -29,9 +32,7 @@ public class ImageSplitVBox extends VBox {
     int defaultSpacing = Reusable.default_spacing;
     int defaultPadding = Reusable.default_padding;
 
-
-    public ImageSplitVBox() {
-
+    public ToGrayScaleVBox() {
         formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
 
         this.runButton = new Button("Run");
@@ -40,7 +41,8 @@ public class ImageSplitVBox extends VBox {
 
         runButton.setOnAction(_ -> {
             try {
-                splitImage(this);
+//                splitImage(this);
+                toGrayScale(this);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -53,13 +55,12 @@ public class ImageSplitVBox extends VBox {
         this.setAlignment(Pos.TOP_CENTER);
     }
 
-
-    public void splitImage(ImageSplitVBox imageSplitVBox) {
-        String inputPath = imageSplitVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = imageSplitVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = imageSplitVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = imageSplitVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = imageSplitVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+    public void toGrayScale(ToGrayScaleVBox toGrayScaleVBox) {
+        String inputPath = toGrayScaleVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
+        String outputPath = toGrayScaleVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
+        String expectedType = toGrayScaleVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
+        String expectedName = toGrayScaleVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = toGrayScaleVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
 
         Task<Void> task = new Task<>() {
 
@@ -95,27 +96,23 @@ public class ImageSplitVBox extends VBox {
                     File file = fileList.get(i);
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
-                        if (file.getName().contains("-full")) {
+                        if (file.getName().contains("-color")) {
                             String imagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                             counter += 1;
                             saveImage(originalImage, imagePath, expectedType);
-                            System.out.println("Full image save successfully: " + file.getName());
+                            System.out.println("Color image save successfully: " + file.getName());
                         } else {
-                            int width = originalImage.getWidth();
-                            int height = originalImage.getHeight();
+                            BufferedImage res = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                            Graphics g = res.getGraphics();
+                            g.drawImage(originalImage, 0, 0, null);
+                            g.dispose();
 
-                            BufferedImage leftHalf = originalImage.getSubimage(0, 0, width / 2, height);
-                            BufferedImage rightHalf = originalImage.getSubimage(width / 2, 0, width / 2, height);
-
-                            String rightImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
-                            counter += 1;
-                            String leftImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
+                            String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                             counter += 1;
 
-                            saveImage(rightHalf, rightImagePath, expectedType);
-                            saveImage(leftHalf, leftImagePath, expectedType);
+                            saveImage(res, outImagePath, expectedType);
 
-                            System.out.println("Image split successfully: " + file.getName());
+                            System.out.println("Image to grayscale successfully: " + file.getName());
                         }
                     } catch (Exception exception) {
                         System.err.println("Error processing image: " + file.getName());

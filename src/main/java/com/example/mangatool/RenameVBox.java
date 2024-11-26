@@ -89,7 +89,7 @@ public class RenameVBox extends VBox {
                         BufferedImage originalImage = ImageIO.read(file);
                         String imagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                         counter += 1;
-                        saveImage(originalImage, imagePath, "png");
+                        saveImage(originalImage, imagePath, expectedType);
                         System.out.println("Full image save successfully: " + file.getName());
                     } catch (Exception exception) {
                         System.err.println("Error processing image: " + file.getName());

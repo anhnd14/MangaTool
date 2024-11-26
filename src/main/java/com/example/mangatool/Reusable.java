@@ -3,7 +3,9 @@ package com.example.mangatool;
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,10 @@ public class Reusable {
     static String top_image_position_text = "Position:";
     static String top_image_x_coordinate_text = "X:";
     static String top_image_y_coordinate_text = "Y:";
+    static String top_crop = "Top:";
+    static String bottom_crop = "Bottom:";
+    static String left_crop = "Left:";
+    static String right_crop = "Right:";
 
     static int small_text_field_pref_width = 50;
     static int long_text_field_pref_width = 300;
@@ -131,4 +137,5 @@ public class Reusable {
             e.printStackTrace();
         }
     }
+
 }

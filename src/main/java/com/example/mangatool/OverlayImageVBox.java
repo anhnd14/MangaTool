@@ -242,7 +242,7 @@ public class OverlayImageVBox extends VBox {
 
                         String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                         counter += 1;
-                        Reusable.saveImage(combinedImg, outImagePath, "png");
+                        Reusable.saveImage(combinedImg, outImagePath, expectedType);
                         System.out.println("Full image save successfully: " + file.getName());
 
                     } catch (IOException e) {
