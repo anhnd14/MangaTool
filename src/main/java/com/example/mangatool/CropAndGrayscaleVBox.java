@@ -149,16 +149,20 @@ public class CropAndGrayscaleVBox extends VBox {
 
                         BufferedImage tmp = originalImage.getSubimage(left, top, originalImage.getWidth() - left - right, originalImage.getHeight() - top - bottom);
 
-                        BufferedImage resImage = new BufferedImage(tmp.getWidth(), tmp.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                        BufferedImage resImage;
 
-                        Graphics g = resImage.getGraphics();
-                        g.drawImage(tmp, 0, 0, null);
-                        g.dispose();
-
-
+                        if (file.getName().contains("-color")) {
+                            resImage = tmp;
+                        } else {
+                            resImage = new BufferedImage(tmp.getWidth(), tmp.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                            Graphics g = resImage.getGraphics();
+                            g.drawImage(tmp, 0, 0, null);
+                            g.dispose();
+                        }
+                        
                         String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                         counter += 1;
-                        Reusable.saveImage(resImage, outImagePath, expectedType);
+                        Reusable.saveImage(resImage, outImagePath, "png");
                         System.out.println("Full image save successfully: " + file.getName());
 
                     } catch (IOException e) {
