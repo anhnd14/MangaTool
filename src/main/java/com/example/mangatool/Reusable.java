@@ -13,19 +13,6 @@ import java.util.Properties;
 
 public class Reusable {
 
-//    static FileReader jsonFile;
-//
-//    static {
-//        try {
-//            jsonFile = new FileReader("resources.json");
-//        } catch (FileNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    static JSONObject jsonObject = new JSONObject(jsonFile);
-//    private static final String FILENAME = jsonObject.getString("FILENAME");
-
 
     static final String FILENAME = "app.properties";
     static String file_format_text = "Choose File Format:";
@@ -80,10 +67,19 @@ public class Reusable {
         }
     }
 
+    public static void loadProperties(Properties properties) throws Exception {
+
+        try {
+            properties.load(new FileInputStream(Reusable.FILENAME));
+        } catch (Exception e) {
+            properties.store(new FileOutputStream(Reusable.FILENAME), null);
+        }
+    }
+
     public static String loadData(String key) {
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream(FILENAME));
+            loadProperties(properties);
             return properties.getProperty(key);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -91,14 +87,26 @@ public class Reusable {
         }
     }
 
+    public static String loadData(String key, String replace) {
+        try {
+            Properties properties = new Properties();
+            loadProperties(properties);
+            if (properties.containsKey(key)) {
+                return  properties.getProperty(key);
+            } else {
+                return replace;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public static void saveData(String key, String value) {
         try {
             Properties properties = new Properties();
-            try {
-                properties.load(new FileInputStream(FILENAME));
-            } catch (Exception exception) {
-                properties.store(new FileOutputStream(FILENAME), null);
-            }
+            loadProperties(properties);
             properties.setProperty(key, value);
             properties.store(new FileOutputStream(FILENAME), null);
         } catch (Exception exception) {

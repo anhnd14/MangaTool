@@ -3,12 +3,17 @@ package com.example.mangatool;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MangaTool extends Application {
     @Override
     public void start(Stage primaryStage) {
         System.out.println("test");
+
+
 
         ImageSplitVBox imageSplitVBox = new ImageSplitVBox();
         CropByPixelVBox cropByPixelVBox = new CropByPixelVBox();
@@ -17,7 +22,40 @@ public class MangaTool extends Application {
         CropAndGrayscaleVBox cropAndGrayscaleVBox = new CropAndGrayscaleVBox();
         OverlayImageVBox overlayImageVBox = new OverlayImageVBox();
 
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        Menu settingMenu = new Menu("Setting");
+
+        menuBar.getMenus().addAll(fileMenu, settingMenu);
+
+        fileMenu.setOnShowing(e -> {
+            System.out.println("Showing File Menu");
+        });
+        fileMenu.setOnHiding(e -> {
+            System.out.println("Hiding File Menu");
+        });
+
+        settingMenu.setOnShowing(e -> {
+            System.out.println("Showing File Menu");
+        });
+        settingMenu.setOnHiding(e -> {
+            System.out.println("Hiding File Menu");
+        });
+
+        MenuItem closeMenuItem = new MenuItem("Close");
+        MenuItem reloadMenuItem = new MenuItem("Reload");
+
+        fileMenu.getItems().addAll(closeMenuItem, reloadMenuItem);
+
+        MenuItem settingMenuItem = new MenuItem("Setting");
+        settingMenu.getItems().add(settingMenuItem);
+
+
+        VBox menuBarVBox = new VBox(menuBar);
+
         primaryStage.setTitle("Manga Tool");
+
+
 
         TabPane tabPane = new TabPane();
         Tab splitTab = new Tab("ImageSplit", new Label("ImageSplit"));
@@ -35,11 +73,43 @@ public class MangaTool extends Application {
         cropAndGrayscaleTab.setContent(cropAndGrayscaleVBox);
         overlayImageTab.setContent(overlayImageVBox);
 
+        VBox screen = new VBox();
 
-        Scene scene = new Scene(tabPane);
-        primaryStage.setScene(scene);
+        screen.getChildren().addAll(menuBarVBox, tabPane);
+
+        AtomicReference<Scene> scene = new AtomicReference<>(new Scene(screen));
+        primaryStage.setScene(scene.get());
         primaryStage.show();
+
+        closeMenuItem.setOnAction(e -> {
+            System.out.println("Close selected");
+            primaryStage.close();
+        });
+
+
+        settingMenuItem.setOnAction(e -> {
+            System.out.println("Setting Popup Opened");
+            try {
+                showSettingPopup(primaryStage);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        reloadMenuItem.setOnAction(_ -> {
+
+            primaryStage.close();
+            primaryStage.show();
+        });
     }
+
+    public void showSettingPopup (Stage stage) throws Exception {
+        SettingPopup settingPopup = new SettingPopup();
+        settingPopup.initOwner(stage);
+        settingPopup.showAndWait();
+
+    }
+
 
     public static void main(String[] args) {
         launch();

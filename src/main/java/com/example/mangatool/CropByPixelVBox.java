@@ -12,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -53,21 +52,27 @@ public class CropByPixelVBox extends VBox {
             }
         });
 
+
+        String topCrop = Reusable.loadData("defaultTopCrop", "420");
+        String bottomCrop = Reusable.loadData("defaultBottomCrop", "420");
+        String leftCrop = Reusable.loadData("defaultLeftCrop", "0");
+        String rightCrop = Reusable.loadData("defaultRightCrop", "0");
+
         Text topCropTitle = new Text(Reusable.top_crop);
         Text bottomCropTitle = new Text(Reusable.bottom_crop);
-        topCropTextField = new TextField("420");
+        topCropTextField = new TextField(topCrop);
         topCropTextField.setPrefWidth(smallTextFieldPrefWidth);
         topCropTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
-        bottomCropTextField = new TextField("420");
+        bottomCropTextField = new TextField(bottomCrop);
         bottomCropTextField.setPrefWidth(smallTextFieldPrefWidth);
         bottomCropTextField.setTooltip(new Tooltip(Reusable.valid_double_tooltip));
 
         Text leftCropTitle = new Text(Reusable.left_crop);
         Text rightCropTitle = new Text(Reusable.right_crop);
-        leftCropTextField = new TextField("0");
+        leftCropTextField = new TextField(leftCrop);
         leftCropTextField.setPrefWidth(smallTextFieldPrefWidth);
         leftCropTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
-        rightCropTextField = new TextField("0");
+        rightCropTextField = new TextField(rightCrop);
         rightCropTextField.setPrefWidth(smallTextFieldPrefWidth);
         rightCropTextField.setTooltip(new Tooltip(Reusable.valid_double_tooltip));
 

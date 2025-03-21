@@ -67,12 +67,17 @@ public class OverlayImageVBox extends VBox {
         });
 
 
+        String topImageHeight = Reusable.loadData("defaultImageHeight", "100");
+        String topImageOpacity = Reusable.loadData("defaultImageOpacity", "0.1");
+        String topImageX = Reusable.loadData("defaultImageX", "10");
+        String topImageY = Reusable.loadData("defaultImageY", "10");
+
         Text topImageHeightTitle = new Text(Reusable.top_image_height_text);
         Text topImageOpacityTitle = new Text(Reusable.top_image_opacity_text);
-        topImageHeightTextField = new TextField("100");
+        topImageHeightTextField = new TextField(topImageHeight);
         topImageHeightTextField.setPrefWidth(smallTextFieldPrefWidth);
         topImageHeightTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
-        topImageOpacityTextField = new TextField("0.5");
+        topImageOpacityTextField = new TextField(topImageOpacity);
         topImageOpacityTextField.setPrefWidth(smallTextFieldPrefWidth);
         topImageOpacityTextField.setTooltip(new Tooltip(Reusable.valid_double_tooltip));
 
@@ -82,10 +87,10 @@ public class OverlayImageVBox extends VBox {
 
         Text topImageXCoordinateTitle = new Text(Reusable.top_image_x_coordinate_text);
         Text topImageYCoordinateTitle = new Text(Reusable.top_image_y_coordinate_text);
-        topImageXCoordinateTextField = new TextField("0");
+        topImageXCoordinateTextField = new TextField(topImageX);
         topImageXCoordinateTextField.setPrefWidth(smallTextFieldPrefWidth);
         topImageXCoordinateTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
-        topImageYCoordinateTextField = new TextField("0");
+        topImageYCoordinateTextField = new TextField(topImageY);
         topImageYCoordinateTextField.setPrefWidth(smallTextFieldPrefWidth);
         topImageYCoordinateTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
 

@@ -107,6 +107,7 @@ public class ToGrayScaleVBox extends VBox {
                             g.drawImage(originalImage, 0, 0, null);
                             g.dispose();
 
+
                             String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                             counter += 1;
 
