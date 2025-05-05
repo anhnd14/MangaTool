@@ -25,17 +25,6 @@ import java.util.Properties;
 public class FormatAndFolderChooserVBox extends VBox {
 
 
-//    static FileReader jsonFile;
-//    static {
-//        try {
-//            jsonFile = new FileReader("D:\\Code\\MangaTool\\src\\main\\java\\com\\example\\mangatool\\resources.json");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    static JSONObject jsonObject = new JSONObject(jsonFile);
-
 
     private static final String FILENAME = Reusable.FILENAME;
     public TextField inputPathTextField;

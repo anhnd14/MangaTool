@@ -60,7 +60,7 @@ public class OverlayImageVBox extends VBox {
         Button selectTopImageButton = new Button(Reusable.select_file_button_text);
         selectTopImageButton.setOnAction(e -> {
             try {
-                fileSelector(topImagePathTextField);
+                Reusable.fileSelector(topImagePathTextField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -271,39 +271,39 @@ public class OverlayImageVBox extends VBox {
 
     }
 
-    public void fileSelector(TextField textField) throws Exception {
-
-        String lastOpenFile = "";
-
-        Properties prop = new Properties();
-        try {
-            prop.load(new FileInputStream(Reusable.FILENAME));
-        } catch (Exception e) {
-            prop.store(new FileOutputStream(Reusable.FILENAME), null);
-        }
-        if (prop.containsKey("lastOpenFile")) {
-            lastOpenFile = Reusable.loadData("lastOpenFile");
-        }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select File");
-
-        Path checkFilePath = Paths.get(lastOpenFile);
-        boolean fileExist = Files.isRegularFile(checkFilePath) && Files.exists(checkFilePath);
-
-        if (!lastOpenFile.equals("") && fileExist) {
-            fileChooser.setInitialDirectory(new File(new File(lastOpenFile).getParent()));
-        }
-
-        File selectedFile = fileChooser.showOpenDialog(null);
-
-        if (selectedFile != null) {
-            textField.setText(selectedFile.getAbsolutePath());
-            Reusable.saveData("lastOpenFile", selectedFile.getAbsolutePath());
-            System.out.print(selectedFile.getAbsolutePath());
-        } else {
-            textField.setText("");
-        }
-
-    }
+//    public void fileSelector(TextField textField) throws Exception {
+//
+//        String lastOpenFile = "";
+//
+//        Properties prop = new Properties();
+//        try {
+//            prop.load(new FileInputStream(Reusable.FILENAME));
+//        } catch (Exception e) {
+//            prop.store(new FileOutputStream(Reusable.FILENAME), null);
+//        }
+//        if (prop.containsKey("lastOpenFile")) {
+//            lastOpenFile = Reusable.loadData("lastOpenFile");
+//        }
+//
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.setTitle("Select File");
+//
+//        Path checkFilePath = Paths.get(lastOpenFile);
+//        boolean fileExist = Files.isRegularFile(checkFilePath) && Files.exists(checkFilePath);
+//
+//        if (!lastOpenFile.equals("") && fileExist) {
+//            fileChooser.setInitialDirectory(new File(new File(lastOpenFile).getParent()));
+//        }
+//
+//        File selectedFile = fileChooser.showOpenDialog(null);
+//
+//        if (selectedFile != null) {
+//            textField.setText(selectedFile.getAbsolutePath());
+//            Reusable.saveData("lastOpenFile", selectedFile.getAbsolutePath());
+//            System.out.print(selectedFile.getAbsolutePath());
+//        } else {
+//            textField.setText("");
+//        }
+//
+//    }
 }

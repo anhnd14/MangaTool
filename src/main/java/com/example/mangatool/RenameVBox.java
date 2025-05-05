@@ -74,6 +74,7 @@ public class RenameVBox extends VBox {
                 File[] files = new File(inputPath).listFiles();
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
+                assert files != null;
                 List<File> fileList = Reusable.filterFiles(files);
 
                 if (fileList.isEmpty()) {

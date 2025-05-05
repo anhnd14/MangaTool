@@ -1,12 +1,14 @@
 package com.example.mangatool;
 
-import org.json.JSONObject;
+import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -30,6 +32,7 @@ public class Reusable {
     static String bottom_crop = "Bottom:";
     static String left_crop = "Left:";
     static String right_crop = "Right:";
+    static String choose_image_text = "Choose Image:";
 
     static int small_text_field_pref_width = 50;
     static int long_text_field_pref_width = 300;
@@ -102,6 +105,41 @@ public class Reusable {
         }
     }
 
+    public static void fileSelector(TextField textField) throws Exception {
+
+        String lastOpenFile = "";
+
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream(Reusable.FILENAME));
+        } catch (Exception e) {
+            prop.store(new FileOutputStream(Reusable.FILENAME), null);
+        }
+        if (prop.containsKey("lastOpenFile")) {
+            lastOpenFile = Reusable.loadData("lastOpenFile");
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select File");
+
+        Path checkFilePath = Paths.get(lastOpenFile);
+        boolean fileExist = Files.isRegularFile(checkFilePath) && Files.exists(checkFilePath);
+
+        if (!lastOpenFile.equals("") && fileExist) {
+            fileChooser.setInitialDirectory(new File(new File(lastOpenFile).getParent()));
+        }
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            textField.setText(selectedFile.getAbsolutePath());
+            Reusable.saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            System.out.print(selectedFile.getAbsolutePath());
+        } else {
+            textField.setText("");
+        }
+
+    }
 
     public static void saveData(String key, String value) {
         try {

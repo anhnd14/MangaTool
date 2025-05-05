@@ -21,6 +21,7 @@ public class MangaTool extends Application {
         ToGrayScaleVBox toGrayScaleVBox = new ToGrayScaleVBox();
         CropAndGrayscaleVBox cropAndGrayscaleVBox = new CropAndGrayscaleVBox();
         OverlayImageVBox overlayImageVBox = new OverlayImageVBox();
+        JoinTwoImagesVBox joinTwoImagesVBox = new JoinTwoImagesVBox();
 
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
@@ -64,7 +65,8 @@ public class MangaTool extends Application {
         Tab toGrayScaleTab = new Tab("To Grayscale", new Label("ToGrayscale"));
         Tab cropAndGrayscaleTab = new Tab("Crop And Grayscale", new Label("CropAndGrayscale"));
         Tab overlayImageTab = new Tab("AddLogo", new Label("AddLogo"));
-        tabPane.getTabs().addAll(splitTab, cropTab, renameTab, toGrayScaleTab, cropAndGrayscaleTab, overlayImageTab);
+        Tab joinImagesTab = new Tab("Join Images", new Label("Join Images"));
+        tabPane.getTabs().addAll(splitTab, cropTab, renameTab, toGrayScaleTab, cropAndGrayscaleTab, overlayImageTab, joinImagesTab);
 
         splitTab.setContent(imageSplitVBox);
         cropTab.setContent(cropByPixelVBox);
@@ -72,6 +74,7 @@ public class MangaTool extends Application {
         toGrayScaleTab.setContent(toGrayScaleVBox);
         cropAndGrayscaleTab.setContent(cropAndGrayscaleVBox);
         overlayImageTab.setContent(overlayImageVBox);
+        joinImagesTab.setContent(joinTwoImagesVBox);
 
         VBox screen = new VBox();
 
