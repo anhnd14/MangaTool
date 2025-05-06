@@ -1,5 +1,6 @@
-package com.example.mangatool;
+package com.example.mangatool.UI;
 
+import static com.example.mangatool.TextConfig.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,12 +13,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class CropByPixelVBox extends VBox {
+import static com.example.mangatool.AppFunction.*;
+
+public class CropAndGrayscaleVBox extends VBox {
 
     public ProgressBar progressBar;
     public Label progressLabel;
@@ -29,12 +33,8 @@ public class CropByPixelVBox extends VBox {
     public TextField rightCropTextField;
 
 
-    int defaultSpacing = Reusable.default_spacing;
-    int defaultPadding = Reusable.default_padding;
-    int smallTextFieldPrefWidth = Reusable.small_text_field_pref_width;
 
-
-    public CropByPixelVBox() {
+    public CropAndGrayscaleVBox() {
 
         formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
 
@@ -46,67 +46,67 @@ public class CropByPixelVBox extends VBox {
             try {
 //                splitImage(this);
                 //thêm phương thức crop
-                cropImage(this);
+                cropAndGrayScaleImage(this);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
 
 
-        String topCrop = Reusable.loadData("defaultTopCrop", "420");
-        String bottomCrop = Reusable.loadData("defaultBottomCrop", "420");
-        String leftCrop = Reusable.loadData("defaultLeftCrop", "0");
-        String rightCrop = Reusable.loadData("defaultRightCrop", "0");
+        String topCrop = loadData("defaultTopCrop", "420");
+        String bottomCrop = loadData("defaultBottomCrop", "420");
+        String leftCrop = loadData("defaultLeftCrop", "0");
+        String rightCrop = loadData("defaultRightCrop", "0");
 
-        Text topCropTitle = new Text(Reusable.top_crop);
-        Text bottomCropTitle = new Text(Reusable.bottom_crop);
+        Text topCropTitle = new Text(top_crop);
+        Text bottomCropTitle = new Text(bottom_crop);
         topCropTextField = new TextField(topCrop);
-        topCropTextField.setPrefWidth(smallTextFieldPrefWidth);
-        topCropTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
+        topCropTextField.setPrefWidth(small_text_field_pref_width);
+        topCropTextField.setTooltip(new Tooltip(positive_number_tooltip));
         bottomCropTextField = new TextField(bottomCrop);
-        bottomCropTextField.setPrefWidth(smallTextFieldPrefWidth);
-        bottomCropTextField.setTooltip(new Tooltip(Reusable.valid_double_tooltip));
+        bottomCropTextField.setPrefWidth(small_text_field_pref_width);
+        bottomCropTextField.setTooltip(new Tooltip(valid_double_tooltip));
 
-        Text leftCropTitle = new Text(Reusable.left_crop);
-        Text rightCropTitle = new Text(Reusable.right_crop);
+        Text leftCropTitle = new Text(left_crop);
+        Text rightCropTitle = new Text(right_crop);
         leftCropTextField = new TextField(leftCrop);
-        leftCropTextField.setPrefWidth(smallTextFieldPrefWidth);
-        leftCropTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
+        leftCropTextField.setPrefWidth(small_text_field_pref_width);
+        leftCropTextField.setTooltip(new Tooltip(positive_number_tooltip));
         rightCropTextField = new TextField(rightCrop);
-        rightCropTextField.setPrefWidth(smallTextFieldPrefWidth);
-        rightCropTextField.setTooltip(new Tooltip(Reusable.valid_double_tooltip));
+        rightCropTextField.setPrefWidth(small_text_field_pref_width);
+        rightCropTextField.setTooltip(new Tooltip(valid_double_tooltip));
 
-        HBox topAndBottomCropHBox = new HBox(defaultSpacing);
-        topAndBottomCropHBox.setSpacing(defaultSpacing);
-        topAndBottomCropHBox.setPadding(new Insets(defaultPadding));
+        HBox topAndBottomCropHBox = new HBox(default_spacing);
+        topAndBottomCropHBox.setSpacing(default_spacing);
+        topAndBottomCropHBox.setPadding(new Insets(default_padding));
         topAndBottomCropHBox.getChildren().addAll(topCropTitle, topCropTextField, bottomCropTitle, bottomCropTextField);
         topAndBottomCropHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        HBox leftAndRightCropHBox = new HBox(defaultSpacing);
-        leftAndRightCropHBox.setSpacing(defaultSpacing);
-        leftAndRightCropHBox.setPadding(new Insets(defaultPadding));
+        HBox leftAndRightCropHBox = new HBox(default_spacing);
+        leftAndRightCropHBox.setSpacing(default_spacing);
+        leftAndRightCropHBox.setPadding(new Insets(default_padding));
         leftAndRightCropHBox.getChildren().addAll(leftCropTitle, leftCropTextField, rightCropTitle, rightCropTextField);
         leftAndRightCropHBox.setAlignment(Pos.BASELINE_CENTER);
 
         this.getChildren().addAll(formatAndFolderChooserVBox, topAndBottomCropHBox, leftAndRightCropHBox, runButton, progressBar, progressLabel);
-        this.setSpacing(defaultSpacing);
+        this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
-        this.setPadding(new Insets(defaultPadding));
+        this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
 
-    public void cropImage(CropByPixelVBox cropByPixelVBox) {
+    public void cropAndGrayScaleImage(CropAndGrayscaleVBox cropAndGrayscaleVBox) {
 
-        String inputPath = cropByPixelVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = cropByPixelVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = cropByPixelVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = cropByPixelVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = cropByPixelVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
-        String topCrop = cropByPixelVBox.topCropTextField.getText();
-        String bottomCrop = cropByPixelVBox.bottomCropTextField.getText();
-        String leftCrop = cropByPixelVBox.leftCropTextField.getText();
-        String rightCrop = cropByPixelVBox.rightCropTextField.getText();
+        String inputPath = cropAndGrayscaleVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
+        String outputPath = cropAndGrayscaleVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
+        String expectedType = cropAndGrayscaleVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
+        String expectedName = cropAndGrayscaleVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = cropAndGrayscaleVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String topCrop = cropAndGrayscaleVBox.topCropTextField.getText();
+        String bottomCrop = cropAndGrayscaleVBox.bottomCropTextField.getText();
+        String leftCrop = cropAndGrayscaleVBox.leftCropTextField.getText();
+        String rightCrop = cropAndGrayscaleVBox.rightCropTextField.getText();
 
         Task<Void> task = new Task<>() {
             @Override
@@ -121,7 +121,7 @@ public class CropByPixelVBox extends VBox {
                     updateMessage("Please choose input path, output path");
                     return null;
                 }
-                if (!Reusable.isPositiveInteger(expectedStartIndex)) {
+                if (!isPositiveInteger(expectedStartIndex)) {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
@@ -129,7 +129,7 @@ public class CropByPixelVBox extends VBox {
                     updateMessage("Please input crop data");
                     return null;
                 }
-                if (!Reusable.isPositiveInteger(topCrop) || !Reusable.isPositiveInteger(bottomCrop) || !Reusable.isPositiveInteger(leftCrop) || !Reusable.isPositiveInteger(rightCrop)) {
+                if (!isPositiveInteger(topCrop) || !isPositiveInteger(bottomCrop) || !isPositiveInteger(leftCrop) || !isPositiveInteger(rightCrop)) {
                     updateMessage("Please input valid crop data");
                     return null;
                 }
@@ -138,7 +138,7 @@ public class CropByPixelVBox extends VBox {
                 File[] files = new File(inputPath).listFiles();
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
-                List<File> fileList = Reusable.filterFiles(files);
+                List<File> fileList = filterFiles(files);
 
                 if (fileList.isEmpty()) {
                     updateMessage("Found no file in the input folder");
@@ -151,14 +151,23 @@ public class CropByPixelVBox extends VBox {
                     File file = fileList.get(i);
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
+
+                        BufferedImage tmp = originalImage.getSubimage(left, top, originalImage.getWidth() - left - right, originalImage.getHeight() - top - bottom);
+
                         BufferedImage resImage;
 
-                        resImage = originalImage.getSubimage(left, top, originalImage.getWidth() - left - right, originalImage.getHeight() - top - bottom);
-
-
+                        if (file.getName().contains("-color")) {
+                            resImage = tmp;
+                        } else {
+                            resImage = new BufferedImage(tmp.getWidth(), tmp.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                            Graphics g = resImage.getGraphics();
+                            g.drawImage(tmp, 0, 0, null);
+                            g.dispose();
+                        }
+                        
                         String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                         counter += 1;
-                        Reusable.saveImage(resImage, outImagePath, expectedType);
+                        saveImage(resImage, outImagePath, "png");
                         System.out.println("Full image save successfully: " + file.getName());
 
                     } catch (IOException e) {
@@ -181,5 +190,4 @@ public class CropByPixelVBox extends VBox {
         new Thread(task).start();
 
     }
-
 }

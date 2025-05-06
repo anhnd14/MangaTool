@@ -1,5 +1,6 @@
 package com.example.mangatool;
 
+import com.example.mangatool.UI.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,6 +23,7 @@ public class MangaTool extends Application {
         CropAndGrayscaleVBox cropAndGrayscaleVBox = new CropAndGrayscaleVBox();
         OverlayImageVBox overlayImageVBox = new OverlayImageVBox();
         JoinTwoImagesVBox joinTwoImagesVBox = new JoinTwoImagesVBox();
+        ImageSplitMultilPartVBox imageSplitMultilPartVBox = new ImageSplitMultilPartVBox();
 
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
@@ -63,18 +65,20 @@ public class MangaTool extends Application {
         Tab cropTab = new Tab("Crop Image", new Label("CropImage"));
         Tab renameTab = new Tab("Rename", new Label("Rename"));
         Tab toGrayScaleTab = new Tab("To Grayscale", new Label("ToGrayscale"));
-        Tab cropAndGrayscaleTab = new Tab("Crop And Grayscale", new Label("CropAndGrayscale"));
+//        Tab cropAndGrayscaleTab = new Tab("Crop And Grayscale", new Label("CropAndGrayscale"));
         Tab overlayImageTab = new Tab("AddLogo", new Label("AddLogo"));
         Tab joinImagesTab = new Tab("Join Images", new Label("Join Images"));
-        tabPane.getTabs().addAll(splitTab, cropTab, renameTab, toGrayScaleTab, cropAndGrayscaleTab, overlayImageTab, joinImagesTab);
+        Tab imageSplitMultiPartTab = new Tab("Split Images", new Label("Split Images"));
+        tabPane.getTabs().addAll(splitTab, cropTab, renameTab, toGrayScaleTab, overlayImageTab, joinImagesTab, imageSplitMultiPartTab);
 
         splitTab.setContent(imageSplitVBox);
         cropTab.setContent(cropByPixelVBox);
         renameTab.setContent(renameVBox);
         toGrayScaleTab.setContent(toGrayScaleVBox);
-        cropAndGrayscaleTab.setContent(cropAndGrayscaleVBox);
+//        cropAndGrayscaleTab.setContent(cropAndGrayscaleVBox);
         overlayImageTab.setContent(overlayImageVBox);
         joinImagesTab.setContent(joinTwoImagesVBox);
+        imageSplitMultiPartTab.setContent(imageSplitMultilPartVBox);
 
         VBox screen = new VBox();
 

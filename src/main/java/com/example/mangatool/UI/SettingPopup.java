@@ -1,4 +1,8 @@
-package com.example.mangatool;
+package com.example.mangatool.UI;
+
+
+import static com.example.mangatool.AppFunction.*;
+import static com.example.mangatool.TextConfig.*;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -8,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -42,10 +45,10 @@ public class SettingPopup extends Stage {
 
     Properties properties = new Properties();
 
-    int defaultSpacing = Reusable.default_spacing;
-    int defaultPadding = Reusable.default_padding;
+    int defaultSpacing = default_spacing;
+    int defaultPadding = default_padding;
 
-    int smallTextFieldPrefWidth = Reusable.small_text_field_pref_width;
+    int smallTextFieldPrefWidth = small_text_field_pref_width;
 
     public SettingPopup() throws Exception {
         this.initModality(Modality.APPLICATION_MODAL);
@@ -59,44 +62,44 @@ public class SettingPopup extends Stage {
         Separator separator2 = new Separator(Orientation.HORIZONTAL);
 
 
-        Reusable.loadProperties(properties);
+        loadProperties(properties);
 
-        defaultTopCropValue = Reusable.loadData("defaultTopCrop", "420");
-        defaultBottomCropValue = Reusable.loadData("defaultBottomCrop", "420");
-        defaultLeftCropValue = Reusable.loadData("defaultLeftCrop", "0");
-        defaultRightCropValue = Reusable.loadData("defaultRightCrop", "0");
+        defaultTopCropValue = loadData("defaultTopCrop", "420");
+        defaultBottomCropValue = loadData("defaultBottomCrop", "420");
+        defaultLeftCropValue = loadData("defaultLeftCrop", "0");
+        defaultRightCropValue = loadData("defaultRightCrop", "0");
 
-        defaultTopImageHeightValue = Reusable.loadData("defaultImageHeight", "100");
-        defaultTopImageOpacityValue = Reusable.loadData("defaultImageOpacity", "0.1");
-        defaultTopImageXCoordinateValue = Reusable.loadData("defaultImageX", "10");
-        defaultTopImageYCoordinateValue = Reusable.loadData("defaultImageY", "10");
+        defaultTopImageHeightValue = loadData("defaultImageHeight", "100");
+        defaultTopImageOpacityValue = loadData("defaultImageOpacity", "0.1");
+        defaultTopImageXCoordinateValue = loadData("defaultImageX", "10");
+        defaultTopImageYCoordinateValue = loadData("defaultImageY", "10");
 
 
-        Text defaultTopCropTitle = new Text(Reusable.top_crop);
-        Text defaultBottomCropTitle = new Text(Reusable.bottom_crop);
+        Text defaultTopCropTitle = new Text(top_crop);
+        Text defaultBottomCropTitle = new Text(bottom_crop);
         defaultTopCropTextField = new TextField(defaultTopCropValue);
         defaultTopCropTextField.setPrefWidth(smallTextFieldPrefWidth);
         defaultBottomCropTextField = new TextField(defaultBottomCropValue);
         defaultBottomCropTextField.setPrefWidth(smallTextFieldPrefWidth);
 
-        Text defaultLeftCropTitle = new Text(Reusable.left_crop);
-        Text defaultRightCropTitle = new Text(Reusable.right_crop);
+        Text defaultLeftCropTitle = new Text(left_crop);
+        Text defaultRightCropTitle = new Text(right_crop);
         defaultLeftCropTextField = new TextField(defaultLeftCropValue);
         defaultLeftCropTextField.setPrefWidth(smallTextFieldPrefWidth);
         defaultRightCropTextField = new TextField(defaultRightCropValue);
         defaultRightCropTextField.setPrefWidth(smallTextFieldPrefWidth);
 
 
-        Text defaultTopImageHeightTitle = new Text(Reusable.top_image_height_text);
-        Text defaultTopImageOpacityTitle = new Text(Reusable.top_image_opacity_text);
+        Text defaultTopImageHeightTitle = new Text(top_image_height_text);
+        Text defaultTopImageOpacityTitle = new Text(top_image_opacity_text);
         defaultTopImageHeightTextField = new TextField(defaultTopImageHeightValue);
         defaultTopImageHeightTextField.setPrefWidth(smallTextFieldPrefWidth);
         defaultTopImageOpacityTextField = new TextField(defaultTopImageOpacityValue);
         defaultTopImageOpacityTextField.setPrefWidth(smallTextFieldPrefWidth);
 
 
-        Text defaultTopImageXCoordinateTitle = new Text(Reusable.top_image_x_coordinate_text);
-        Text defaultTopImageYCoordinateTitle = new Text(Reusable.top_image_y_coordinate_text);
+        Text defaultTopImageXCoordinateTitle = new Text(top_image_x_coordinate_text);
+        Text defaultTopImageYCoordinateTitle = new Text(top_image_y_coordinate_text);
         defaultTopImageXCoordinateTextField = new TextField(defaultTopImageXCoordinateValue);
         defaultTopImageXCoordinateTextField.setPrefWidth(smallTextFieldPrefWidth);
         defaultTopImageYCoordinateTextField = new TextField(defaultTopImageYCoordinateValue);
@@ -170,15 +173,15 @@ public class SettingPopup extends Stage {
     }
 
     public void saveDefaultValues() {
-        Reusable.saveData("defaultImageHeight", defaultTopImageHeightTextField.getText());
-        Reusable.saveData("defaultImageOpacity", defaultTopImageOpacityTextField.getText());
-        Reusable.saveData("defaultImageX", defaultTopImageXCoordinateTextField.getText());
-        Reusable.saveData("defaultImageY", defaultTopImageYCoordinateTextField.getText());
+        saveData("defaultImageHeight", defaultTopImageHeightTextField.getText());
+        saveData("defaultImageOpacity", defaultTopImageOpacityTextField.getText());
+        saveData("defaultImageX", defaultTopImageXCoordinateTextField.getText());
+        saveData("defaultImageY", defaultTopImageYCoordinateTextField.getText());
 
-        Reusable.saveData("defaultTopCrop", defaultTopCropTextField.getText());
-        Reusable.saveData("defaultBottomCrop", defaultBottomCropTextField.getText());
-        Reusable.saveData("defaultLeftCrop", defaultLeftCropTextField.getText());
-        Reusable.saveData("defaultRightCrop", defaultRightCropTextField.getText());
+        saveData("defaultTopCrop", defaultTopCropTextField.getText());
+        saveData("defaultBottomCrop", defaultBottomCropTextField.getText());
+        saveData("defaultLeftCrop", defaultLeftCropTextField.getText());
+        saveData("defaultRightCrop", defaultRightCropTextField.getText());
     }
 
 

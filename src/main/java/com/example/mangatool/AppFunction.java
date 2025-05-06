@@ -1,11 +1,16 @@
 package com.example.mangatool;
 
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,39 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class Reusable {
+import static com.example.mangatool.TextConfig.*;
 
-
-    static final String FILENAME = "app.properties";
-    static String file_format_text = "Choose File Format:";
-    static String name_format_text = "Choose Name Format:";
-    static String start_index_text = "Start Index:";
-    static String input_path_text = "Input Path:";
-    static String output_path_text = "Output Path:";
-    static String top_image_text = "Image Path:";
-    static String top_image_height_text = "Height";
-    static String top_image_opacity_text = "Opacity:";
-    static String top_image_position_text = "Position:";
-    static String top_image_x_coordinate_text = "X:";
-    static String top_image_y_coordinate_text = "Y:";
-    static String top_crop = "Top:";
-    static String bottom_crop = "Bottom:";
-    static String left_crop = "Left:";
-    static String right_crop = "Right:";
-    static String choose_image_text = "Choose Image:";
-
-    static int small_text_field_pref_width = 50;
-    static int long_text_field_pref_width = 300;
-
-    static String positive_number_tooltip = "Điền số nguyên dương";
-    static String valid_double_tooltip = "Điền số từ 0-1";
-
-    static String select_folder_button_text = "Select Folder";
-    static String open_folder_button_text = "Open Folder";
-    static String select_file_button_text = "Select File";
-
-    static int default_spacing = 10;
-    static int default_padding = 10;
+public class AppFunction {
 
 
     public static boolean isPositiveInteger(String string) {
@@ -73,9 +48,9 @@ public class Reusable {
     public static void loadProperties(Properties properties) throws Exception {
 
         try {
-            properties.load(new FileInputStream(Reusable.FILENAME));
+            properties.load(new FileInputStream(FILENAME));
         } catch (Exception e) {
-            properties.store(new FileOutputStream(Reusable.FILENAME), null);
+            properties.store(new FileOutputStream(FILENAME), null);
         }
     }
 
@@ -84,8 +59,8 @@ public class Reusable {
             Properties properties = new Properties();
             loadProperties(properties);
             return properties.getProperty(key);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -111,21 +86,22 @@ public class Reusable {
 
         Properties prop = new Properties();
         try {
-            prop.load(new FileInputStream(Reusable.FILENAME));
+            prop.load(new FileInputStream(FILENAME));
         } catch (Exception e) {
-            prop.store(new FileOutputStream(Reusable.FILENAME), null);
+            prop.store(new FileOutputStream(FILENAME), null);
         }
         if (prop.containsKey("lastOpenFile")) {
-            lastOpenFile = Reusable.loadData("lastOpenFile");
+            lastOpenFile = loadData("lastOpenFile");
         }
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File");
 
+        assert lastOpenFile != null;
         Path checkFilePath = Paths.get(lastOpenFile);
         boolean fileExist = Files.isRegularFile(checkFilePath) && Files.exists(checkFilePath);
 
-        if (!lastOpenFile.equals("") && fileExist) {
+        if (!lastOpenFile.isEmpty() && fileExist) {
             fileChooser.setInitialDirectory(new File(new File(lastOpenFile).getParent()));
         }
 
@@ -133,12 +109,96 @@ public class Reusable {
 
         if (selectedFile != null) {
             textField.setText(selectedFile.getAbsolutePath());
-            Reusable.saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            saveData("lastOpenFile", selectedFile.getAbsolutePath());
             System.out.print(selectedFile.getAbsolutePath());
         } else {
             textField.setText("");
         }
 
+    }
+
+    public static String fileSelector() throws Exception {
+
+        String lastOpenFile = "";
+
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream(FILENAME));
+        } catch (Exception e) {
+            prop.store(new FileOutputStream(FILENAME), null);
+        }
+        if (prop.containsKey("lastOpenFile")) {
+            lastOpenFile = loadData("lastOpenFile");
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select File");
+
+        assert lastOpenFile != null;
+        Path checkFilePath = Paths.get(lastOpenFile);
+        boolean fileExist = Files.isRegularFile(checkFilePath) && Files.exists(checkFilePath);
+
+        if (!lastOpenFile.isEmpty() && fileExist) {
+            fileChooser.setInitialDirectory(new File(new File(lastOpenFile).getParent()));
+        }
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            System.out.println(selectedFile.getAbsolutePath());
+        }
+
+        return  selectedFile.getAbsolutePath();
+    }
+
+    public static void selectFolder(TextField textField) throws IOException {
+        String lastOpenPath = "";
+        Properties properties = new Properties();
+
+        try {
+            properties.load(new FileInputStream(FILENAME));
+        } catch (Exception exception) {
+            properties.store(new FileOutputStream(FILENAME), null);
+        }
+        if (properties.containsKey("lastOpenPath")) {
+            lastOpenPath = loadData("lastOpenPath");
+        }
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Folder");
+
+        Path checkPath = Paths.get(lastOpenPath);
+        boolean pathExist = Files.isDirectory(checkPath) && Files.exists(checkPath);
+
+        if (!lastOpenPath.equals("") && pathExist) {
+            directoryChooser.setInitialDirectory(new File(lastOpenPath));
+        }
+
+        File selectedDirectory = directoryChooser.showDialog(null);
+
+        if (selectedDirectory != null) {
+            textField.setText(selectedDirectory.getAbsolutePath());
+            saveData("lastOpenPath", selectedDirectory.getAbsolutePath());
+        } else {
+            textField.setText("");
+        }
+
+    }
+
+    public static void openFolder(TextField textField) {
+        String pathToOpen = textField.getText();
+        if (pathToOpen.isEmpty()) {
+            System.out.print("Folder not found");
+            return;
+        }
+
+        try {
+            Desktop.getDesktop().open(new File(pathToOpen));
+        } catch (Exception exception) {
+            System.out.print("Folder not found");
+            exception.printStackTrace();
+        }
     }
 
     public static void saveData(String key, String value) {
@@ -183,5 +243,4 @@ public class Reusable {
             e.printStackTrace();
         }
     }
-
 }

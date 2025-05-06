@@ -1,5 +1,7 @@
-package com.example.mangatool;
+package com.example.mangatool.UI;
 
+import static com.example.mangatool.AppFunction.*;
+import com.example.mangatool.TextConfig;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,7 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
-import static com.example.mangatool.Reusable.saveImage;
+
 
 public class RenameVBox extends VBox {
 
@@ -22,8 +24,8 @@ public class RenameVBox extends VBox {
     public Button runButton;
     public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
 
-    int defaultSpacing = Reusable.default_spacing;
-    int defaultPadding = Reusable.default_padding;
+    int defaultSpacing = TextConfig.default_spacing;
+    int defaultPadding = TextConfig.default_padding;
 
     public RenameVBox() {
         formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
@@ -67,7 +69,7 @@ public class RenameVBox extends VBox {
                     System.out.print("Please choose input path and output path");
                     return null;
                 }
-                if (!Reusable.isPositiveInteger(expectedStartIndex)) {
+                if (!isPositiveInteger(expectedStartIndex)) {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
@@ -75,7 +77,7 @@ public class RenameVBox extends VBox {
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
                 assert files != null;
-                List<File> fileList = Reusable.filterFiles(files);
+                List<File> fileList = filterFiles(files);
 
                 if (fileList.isEmpty()) {
                     updateMessage("Found no image file in the input folder");

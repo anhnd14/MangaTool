@@ -1,18 +1,19 @@
-package com.example.mangatool;
+package com.example.mangatool.UI;
 
+import static com.example.mangatool.AppFunction.*;
+
+import com.example.mangatool.TextConfig;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
@@ -25,22 +26,21 @@ import java.util.Properties;
 public class FormatAndFolderChooserVBox extends VBox {
 
 
-
-    private static final String FILENAME = Reusable.FILENAME;
+    private static final String FILENAME = TextConfig.FILENAME;
     public TextField inputPathTextField;
     public TextField outputPathTextField;
     public TextField startIndexTextField;
     public ComboBox<String> fileFormatCombo;
     public ComboBox<String> nameFormatCombo;
 
-    int smallTextFieldPrefWidth = Reusable.small_text_field_pref_width;
-    int longTextFieldPrefWidth = Reusable.long_text_field_pref_width;
+    int smallTextFieldPrefWidth = TextConfig.small_text_field_pref_width;
+    int longTextFieldPrefWidth = TextConfig.long_text_field_pref_width;
 
-    String selectFolderText = Reusable.select_folder_button_text;
-    String openFolderText = Reusable.open_folder_button_text;
+    String selectFolderText = TextConfig.select_folder_button_text;
+    String openFolderText = TextConfig.open_folder_button_text;
 
-    int defaultSpacing = Reusable.default_spacing;
-    int defaultPadding = Reusable.default_padding;
+    int defaultSpacing = TextConfig.default_spacing;
+    int defaultPadding = TextConfig.default_padding;
 
 
     public FormatAndFolderChooserVBox() {
@@ -53,13 +53,13 @@ public class FormatAndFolderChooserVBox extends VBox {
         this.nameFormatCombo = new ComboBox<>(nameFormats);
         this.nameFormatCombo.getSelectionModel().select(2);
 
-        Text formatTitle = new Text(Reusable.file_format_text);
-        Text nameFormatTitle = new Text(Reusable.name_format_text);
-        Text startIndexTitle = new Text(Reusable.start_index_text);
+        Text formatTitle = new Text(TextConfig.file_format_text);
+        Text nameFormatTitle = new Text(TextConfig.name_format_text);
+        Text startIndexTitle = new Text(TextConfig.start_index_text);
         startIndexTextField = new TextField();
         startIndexTextField.setPrefWidth(smallTextFieldPrefWidth);
         startIndexTextField.setText("0");
-        startIndexTextField.setTooltip(new Tooltip(Reusable.positive_number_tooltip));
+        startIndexTextField.setTooltip(new Tooltip(TextConfig.positive_number_tooltip));
 
         Text formatNotification = new Text();
         formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndexTextField.getText()));
@@ -68,8 +68,8 @@ public class FormatAndFolderChooserVBox extends VBox {
         nameFormatCombo.setOnAction(e -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndexTextField.getText())));
         startIndexTextField.setOnKeyTyped(e -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndexTextField.getText())));
 
-        Text inputText = new Text(Reusable.input_path_text);
-        Text outputText = new Text(Reusable.output_path_text);
+        Text inputText = new Text(TextConfig.input_path_text);
+        Text outputText = new Text(TextConfig.output_path_text);
 
         inputPathTextField = new TextField();
         inputPathTextField.setPrefWidth(longTextFieldPrefWidth);
@@ -149,58 +149,58 @@ public class FormatAndFolderChooserVBox extends VBox {
 
     }
 
-    public void selectFolder(TextField textField) throws IOException {
-        String lastOpenPath = "";
-        Properties properties = new Properties();
-
-        try {
-            properties.load(new FileInputStream(FILENAME));
-        } catch (Exception exception) {
-            properties.store(new FileOutputStream(FILENAME), null);
-        }
-        if (properties.containsKey("lastOpenPath")) {
-            lastOpenPath = Reusable.loadData("lastOpenPath");
-        }
-
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Folder");
-
-        Path checkPath = Paths.get(lastOpenPath);
-        boolean pathExist = Files.isDirectory(checkPath) && Files.exists(checkPath);
-
-        if (!lastOpenPath.equals("") && pathExist) {
-            directoryChooser.setInitialDirectory(new File(lastOpenPath));
-        }
-
-        File selectedDirectory = directoryChooser.showDialog(null);
-
-        if (selectedDirectory != null) {
-            textField.setText(selectedDirectory.getAbsolutePath());
-            Reusable.saveData("lastOpenPath", selectedDirectory.getAbsolutePath());
-        } else {
-            textField.setText("");
-        }
-
-    }
-
-    public void openFolder(TextField textField) {
-        String pathToOpen = textField.getText();
-        if (pathToOpen.isEmpty()) {
-            System.out.print("Folder not found");
-            return;
-        }
-
-        try {
-            Desktop.getDesktop().open(new File(pathToOpen));
-        } catch (Exception exception) {
-            System.out.print("Folder not found");
-            exception.printStackTrace();
-        }
-    }
+//    public void selectFolder(TextField textField) throws IOException {
+//        String lastOpenPath = "";
+//        Properties properties = new Properties();
+//
+//        try {
+//            properties.load(new FileInputStream(FILENAME));
+//        } catch (Exception exception) {
+//            properties.store(new FileOutputStream(FILENAME), null);
+//        }
+//        if (properties.containsKey("lastOpenPath")) {
+//            lastOpenPath = loadData("lastOpenPath");
+//        }
+//
+//        DirectoryChooser directoryChooser = new DirectoryChooser();
+//        directoryChooser.setTitle("Select Folder");
+//
+//        Path checkPath = Paths.get(lastOpenPath);
+//        boolean pathExist = Files.isDirectory(checkPath) && Files.exists(checkPath);
+//
+//        if (!lastOpenPath.equals("") && pathExist) {
+//            directoryChooser.setInitialDirectory(new File(lastOpenPath));
+//        }
+//
+//        File selectedDirectory = directoryChooser.showDialog(null);
+//
+//        if (selectedDirectory != null) {
+//            textField.setText(selectedDirectory.getAbsolutePath());
+//            saveData("lastOpenPath", selectedDirectory.getAbsolutePath());
+//        } else {
+//            textField.setText("");
+//        }
+//
+//    }
+//
+//    public void openFolder(TextField textField) {
+//        String pathToOpen = textField.getText();
+//        if (pathToOpen.isEmpty()) {
+//            System.out.print("Folder not found");
+//            return;
+//        }
+//
+//        try {
+//            Desktop.getDesktop().open(new File(pathToOpen));
+//        } catch (Exception exception) {
+//            System.out.print("Folder not found");
+//            exception.printStackTrace();
+//        }
+//    }
 
     public static String setTextFormatNotification(String nameFormat, String fileFormat, String startIndex) {
         int formatCounter = 0;
-        if (Reusable.isPositiveInteger(startIndex)) {
+        if (isPositiveInteger(startIndex)) {
             formatCounter = Integer.parseInt(startIndex);
         }
         String res;
