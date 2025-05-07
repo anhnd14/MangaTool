@@ -54,7 +54,6 @@ public class ImageSplitMultilPartVBox extends VBox {
         lineList = new ArrayList<>();
 
 
-
         Button resetAllButton;
         Button resetLineButton;
         resetAllButton = new Button(reset_all_button_text);
@@ -125,11 +124,7 @@ public class ImageSplitMultilPartVBox extends VBox {
         runAndResetButtonHBox.setAlignment(Pos.BASELINE_CENTER);
         runAndResetButtonHBox.getChildren().addAll(runButton, resetAllButton, resetLineButton);
         runButton.setOnAction(_ -> {
-            try {
-                splitImageMultiParts(this);
-            } catch (Exception e) {
-                throw e;
-            }
+            splitImageMultiParts(this);
         });
 
         HBox hBoxOutput = new HBox(default_spacing);
@@ -212,6 +207,7 @@ public class ImageSplitMultilPartVBox extends VBox {
                 BufferedImage inputImage = ImageIO.read(new File(image.getUrl()));
 
 
+                Collections.sort(lineList);
 
                 for (int i = 0; i <= counter; i++) {
 
@@ -233,7 +229,7 @@ public class ImageSplitMultilPartVBox extends VBox {
                     }
 
 
-                    BufferedImage resImage = new BufferedImage((int) image.getWidth(), end - start, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage resImage;
 
                     resImage = inputImage.getSubimage(0, start, inputImage.getWidth(), end - start);
 
@@ -242,12 +238,7 @@ public class ImageSplitMultilPartVBox extends VBox {
 
                     saveImage(resImage, outImagePath, "png");
 
-
                 }
-
-
-
-
 
 
                 updateProgress(100, 100);

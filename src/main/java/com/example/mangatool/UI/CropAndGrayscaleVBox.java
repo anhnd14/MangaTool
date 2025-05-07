@@ -43,13 +43,9 @@ public class CropAndGrayscaleVBox extends VBox {
         this.progressLabel = new Label("");
 
         runButton.setOnAction(_ -> {
-            try {
-//                splitImage(this);
-                //thêm phương thức crop
-                cropAndGrayScaleImage(this);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+            //                splitImage(this);
+            //thêm phương thức crop
+            cropAndGrayScaleImage(this);
         });
 
 
