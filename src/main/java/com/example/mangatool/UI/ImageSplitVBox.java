@@ -1,6 +1,9 @@
 package com.example.mangatool.UI;
 
 import static com.example.mangatool.TextConfig.*;
+
+import com.example.mangatool.MinorUI.FoldersChooserVBox;
+import com.example.mangatool.MinorUI.FormatChooserVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -57,8 +60,8 @@ public class ImageSplitVBox extends VBox {
 
 
     public void splitImage(ImageSplitVBox imageSplitVBox) {
-        String inputPath = imageSplitVBox.foldersChooserVBox.inputPathTextField.getText();
-        String outputPath = imageSplitVBox.foldersChooserVBox.outputPathTextField.getText();
+        String inputPath = imageSplitVBox.foldersChooserVBox.inputSelector.textField.getText();
+        String outputPath = imageSplitVBox.foldersChooserVBox.outputSelector.textField.getText();
         String expectedType = imageSplitVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = imageSplitVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = imageSplitVBox.formatChooserVBox.startIndexTextField.getText();
@@ -69,7 +72,7 @@ public class ImageSplitVBox extends VBox {
             protected Void call() {
 
 
-                if (inputPath.equals("") || outputPath.equals("")) {
+                if (inputPath.isEmpty() || outputPath.isEmpty()) {
                     updateMessage("Please choose input path and output path");
                     return null;
                 }
@@ -82,11 +85,17 @@ public class ImageSplitVBox extends VBox {
                     return null;
                 }
                 File[] files = new File(inputPath).listFiles();
+
+                if (files == null) {
+                    updateMessage("Found no image file in the input folder");
+                    return null;
+                }
+
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = filterFiles(files);
 
-                if (fileList.size() == 0) {
+                if (fileList.isEmpty()) {
                     updateMessage("Found no image file in the input folder");
                     return null;
                 }

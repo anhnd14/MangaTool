@@ -1,6 +1,9 @@
 package com.example.mangatool.UI;
 
 import static com.example.mangatool.TextConfig.*;
+
+import com.example.mangatool.MinorUI.FoldersChooserVBox;
+import com.example.mangatool.MinorUI.FormatChooserVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -45,8 +48,6 @@ public class CropAndGrayscaleVBox extends VBox {
         this.progressLabel = new Label("");
 
         runButton.setOnAction(_ -> {
-            //                splitImage(this);
-            //thêm phương thức crop
             cropAndGrayScaleImage(this);
         });
 
@@ -96,8 +97,8 @@ public class CropAndGrayscaleVBox extends VBox {
 
     public void cropAndGrayScaleImage(CropAndGrayscaleVBox cropAndGrayscaleVBox) {
 
-        String inputPath = cropAndGrayscaleVBox.foldersChooserVBox.inputPathTextField.getText();
-        String outputPath = cropAndGrayscaleVBox.foldersChooserVBox.outputPathTextField.getText();
+        String inputPath = cropAndGrayscaleVBox.foldersChooserVBox.inputSelector.textField.getText();
+        String outputPath = cropAndGrayscaleVBox.foldersChooserVBox.outputSelector.textField.getText();
         String expectedType = cropAndGrayscaleVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = cropAndGrayscaleVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = cropAndGrayscaleVBox.formatChooserVBox.startIndexTextField.getText();
@@ -134,6 +135,12 @@ public class CropAndGrayscaleVBox extends VBox {
 
 
                 File[] files = new File(inputPath).listFiles();
+
+                if (files == null) {
+                    updateMessage("Found no file in the input folder");
+                    return null;
+                }
+
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = filterFiles(files);

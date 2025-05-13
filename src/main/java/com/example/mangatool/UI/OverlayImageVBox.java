@@ -3,6 +3,9 @@ package com.example.mangatool.UI;
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
+import com.example.mangatool.MinorUI.FoldersChooserVBox;
+import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -30,7 +33,9 @@ public class OverlayImageVBox extends VBox {
     public Button runButton;
     public FormatChooserVBox formatChooserVBox;
     public FoldersChooserVBox foldersChooserVBox;
-    public TextField topImagePathTextField;
+//    public TextField topImagePathTextField;
+    public TextFieldAndTwoButtonsHBox topImageSelector;
+
     public TextField topImageHeightTextField;
     public TextField topImageOpacityTextField;
     public TextField topImageXCoordinateTextField;
@@ -45,19 +50,22 @@ public class OverlayImageVBox extends VBox {
 
         ObservableList<String> position = FXCollections.observableArrayList("Top Left", "Top Right", "Bottom Left", "Bottom Right");
 
-        Text topImageTitle = new Text(top_image_text);
-        topImagePathTextField = new TextField();
-        topImagePathTextField.setPrefWidth(long_text_field_pref_width);
 
-        Button selectTopImageButton = new Button(select_file_button_text);
-        selectTopImageButton.setOnAction(e -> {
+        topImageSelector = new TextFieldAndTwoButtonsHBox(top_image_text, select_file_button_text, open_file_button_text);
+        topImageSelector.firstButton.setOnAction(e -> {
             try {
-                fileSelector(topImagePathTextField);
+                fileSelector(topImageSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
-
+        topImageSelector.secondButton.setOnAction(_ -> {
+            try {
+                openFolder(topImageSelector.textField);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
 
         String topImageHeight = loadData("defaultImageHeight", "100");
         String topImageOpacity = loadData("defaultImageOpacity", "0.1");
@@ -86,11 +94,6 @@ public class OverlayImageVBox extends VBox {
         topImageYCoordinateTextField.setPrefWidth(small_text_field_pref_width);
         topImageYCoordinateTextField.setTooltip(new Tooltip(positive_number_tooltip));
 
-        HBox topImagePathHBox = new HBox();
-        topImagePathHBox.setSpacing(default_spacing);
-        topImagePathHBox.setPadding(new Insets(default_padding));
-        topImagePathHBox.setAlignment(Pos.BASELINE_CENTER);
-        topImagePathHBox.getChildren().addAll(topImageTitle, topImagePathTextField, selectTopImageButton);
 
         HBox topImageHeightAndOpacityHBox = new HBox(default_spacing);
         topImageHeightAndOpacityHBox.setSpacing(default_spacing);
@@ -119,15 +122,15 @@ public class OverlayImageVBox extends VBox {
         this.setSpacing(default_spacing);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
-        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topImagePathHBox, topImageHeightAndOpacityHBox, topImageCoordinateHBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topImageSelector, topImageHeightAndOpacityHBox, topImageCoordinateHBox, runButton, progressBar, progressLabel);
 
     }
 
     public void overlayImage(OverlayImageVBox overlayImageVBox) {
 
-        String imgPath = overlayImageVBox.topImagePathTextField.getText();
-        String inputPath = overlayImageVBox.foldersChooserVBox.inputPathTextField.getText();
-        String outputPath = overlayImageVBox.foldersChooserVBox.outputPathTextField.getText();
+        String imgPath = overlayImageVBox.topImageSelector.textField.getText();
+        String inputPath = overlayImageVBox.foldersChooserVBox.inputSelector.textField.getText();
+        String outputPath = overlayImageVBox.foldersChooserVBox.outputSelector.textField.getText();
         String expectedType = overlayImageVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = overlayImageVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = overlayImageVBox.formatChooserVBox.startIndexTextField.getText();
@@ -145,7 +148,7 @@ public class OverlayImageVBox extends VBox {
                 int thisTopImageX = 0;
                 int thisTopImageY = 0;
 
-                if (inputPath.equals("") || outputPath.equals("") || imgPath.equals("")) {
+                if (inputPath.isEmpty() || outputPath.isEmpty() || imgPath.isEmpty()) {
                     updateMessage("Please choose input path, output path and top image");
                     return null;
                 }
@@ -153,7 +156,7 @@ public class OverlayImageVBox extends VBox {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
-                if (topImageHeight.equals("") || topImageOpacity.equals("") || topImageX.equals("") || topImageY.equals("")) {
+                if (topImageHeight.isEmpty() || topImageOpacity.isEmpty() || topImageX.isEmpty() || topImageY.isEmpty()) {
                     updateMessage("Please input top image data");
                     return null;
                 }
@@ -180,6 +183,12 @@ public class OverlayImageVBox extends VBox {
                 }
 
                 File[] files = new File(inputPath).listFiles();
+
+                if (files == null) {
+                    updateMessage("Found no file in the input folder");
+                    return null;
+                }
+
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = filterFiles(files);

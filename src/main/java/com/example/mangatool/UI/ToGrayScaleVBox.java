@@ -1,6 +1,9 @@
 package com.example.mangatool.UI;
 
 import static com.example.mangatool.TextConfig.*;
+
+import com.example.mangatool.MinorUI.FoldersChooserVBox;
+import com.example.mangatool.MinorUI.FormatChooserVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -54,8 +57,8 @@ public class ToGrayScaleVBox extends VBox {
     }
 
     public void toGrayScale(ToGrayScaleVBox toGrayScaleVBox) {
-        String inputPath = toGrayScaleVBox.foldersChooserVBox.inputPathTextField.getText();
-        String outputPath = toGrayScaleVBox.foldersChooserVBox.outputPathTextField.getText();
+        String inputPath = toGrayScaleVBox.foldersChooserVBox.inputSelector.textField.getText();
+        String outputPath = toGrayScaleVBox.foldersChooserVBox.outputSelector.textField.getText();
         String expectedType = toGrayScaleVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = toGrayScaleVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = toGrayScaleVBox.formatChooserVBox.startIndexTextField.getText();
@@ -79,6 +82,12 @@ public class ToGrayScaleVBox extends VBox {
                     return null;
                 }
                 File[] files = new File(inputPath).listFiles();
+
+                if (files == null) {
+                    updateMessage("Found no image file in the input folder");
+                    return null;
+                }
+
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = filterFiles(files);

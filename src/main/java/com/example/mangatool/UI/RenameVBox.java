@@ -2,6 +2,9 @@ package com.example.mangatool.UI;
 
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
+
+import com.example.mangatool.MinorUI.FoldersChooserVBox;
+import com.example.mangatool.MinorUI.FormatChooserVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -52,8 +55,8 @@ public class RenameVBox extends VBox {
 
     public void renameImage(RenameVBox renameVBox) {
 
-        String inputPath = renameVBox.foldersChooserVBox.inputPathTextField.getText();
-        String outputPath = renameVBox.foldersChooserVBox.outputPathTextField.getText();
+        String inputPath = renameVBox.foldersChooserVBox.inputSelector.textField.getText();
+        String outputPath = renameVBox.foldersChooserVBox.outputSelector.textField.getText();
         String expectedType = renameVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = renameVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = renameVBox.formatChooserVBox.startIndexTextField.getText();

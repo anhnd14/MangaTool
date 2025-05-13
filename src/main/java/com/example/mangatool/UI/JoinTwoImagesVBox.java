@@ -5,6 +5,7 @@ import static com.example.mangatool.AppFunction.*;
 
 import static com.example.mangatool.TextConfig.*;
 
+import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -31,8 +32,8 @@ public class JoinTwoImagesVBox extends VBox {
     public Label progressLabel;
     public Button runButton;
     public ComboBox<String> fileFormatCombo;
-    public TextField firstImageTextField;
-    public TextField secondImageTextField;
+    public TextFieldAndTwoButtonsHBox firstImageSelector;
+    public TextFieldAndTwoButtonsHBox secondImageSelector;
     public TextField outFileNameTextField;
     public ComboBox<String> joinDirection;
 
@@ -52,25 +53,34 @@ public class JoinTwoImagesVBox extends VBox {
         hBoxChooseFormat.setPadding(new Insets(default_padding));
         hBoxChooseFormat.getChildren().addAll(formatTitle, this.fileFormatCombo);
 
-        Text firstImageTitle = new Text(choose_image_text);
-        firstImageTextField = new TextField();
-        firstImageTextField.setPrefWidth(long_text_field_pref_width);
-        Button selectFirstImageButton = new Button(select_file_button_text);
-        selectFirstImageButton.setOnAction(_ -> {
+
+        firstImageSelector = new TextFieldAndTwoButtonsHBox(choose_image_text, select_file_button_text, open_file_button_text);
+        firstImageSelector.firstButton.setOnAction(_ -> {
             try {
-                fileSelector(firstImageTextField);
+                fileSelector(firstImageSelector.textField);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+        firstImageSelector.secondButton.setOnAction(_ -> {
+            try {
+                openFolder(firstImageSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
 
-        Text secondImageTitle = new Text(choose_image_text);
-        secondImageTextField = new TextField();
-        secondImageTextField.setPrefWidth(long_text_field_pref_width);
-        Button selectSecondImageButton = new Button(select_file_button_text);
-        selectSecondImageButton.setOnAction(e -> {
+        secondImageSelector = new TextFieldAndTwoButtonsHBox(choose_image_text, select_file_button_text, open_file_button_text);
+        secondImageSelector.firstButton.setOnAction(e -> {
             try {
-                fileSelector(secondImageTextField);
+                fileSelector(secondImageSelector.textField);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+        secondImageSelector.secondButton.setOnAction(_ -> {
+            try {
+                openFolder(secondImageSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -92,28 +102,7 @@ public class JoinTwoImagesVBox extends VBox {
         outFileNameAndDirectionHBox.getChildren().addAll(outFileNameTitle, outFileNameTextField, joinDirectionTitle, joinDirection);
 
 
-        HBox firstImagePathHBox = new HBox();
-        firstImagePathHBox.setSpacing(default_spacing);
-        firstImagePathHBox.setPadding(new Insets(default_padding));
-        firstImagePathHBox.setAlignment(Pos.BASELINE_CENTER);
-        firstImagePathHBox.getChildren().addAll(firstImageTitle, firstImageTextField, selectFirstImageButton);
-
-        HBox secondImagePathHBox = new HBox();
-        secondImagePathHBox.setSpacing(default_spacing);
-        secondImagePathHBox.setPadding(new Insets(default_padding));
-        secondImagePathHBox.setAlignment(Pos.BASELINE_CENTER);
-        secondImagePathHBox.getChildren().addAll(secondImageTitle, secondImageTextField, selectSecondImageButton);
-
-        Button openFolderButton = new Button(open_folder_button_text);
-        openFolderButton.setOnAction(e -> {
-            try {
-                File file = new File(firstImageTextField.getText());
-                String outputPath = firstImageTextField.getText().substring(0, firstImageTextField.getText().length() - file.getName().length() - 1);
-                openFolder(outputPath);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+        Button openFolderButton = openFolderButton();
 
 
         this.runButton = new Button("Run");
@@ -129,19 +118,31 @@ public class JoinTwoImagesVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(hBoxChooseFormat, firstImagePathHBox, secondImagePathHBox,outFileNameAndDirectionHBox, openFolderButton, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(hBoxChooseFormat, firstImageSelector, secondImageSelector,outFileNameAndDirectionHBox, openFolderButton, runButton, progressBar, progressLabel);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
-
+    private Button openFolderButton() {
+        Button openFolderButton = new Button(open_folder_button_text);
+        openFolderButton.setOnAction(e -> {
+            try {
+                File file = new File(firstImageSelector.textField.getText());
+                String outputPath = firstImageSelector.textField.getText().substring(0, firstImageSelector.textField.getText().length() - file.getName().length() - 1);
+                openFolder(outputPath);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+        return openFolderButton;
+    }
 
 
     public void joinImages(JoinTwoImagesVBox joinTwoImagesVBox) {
-        String firstImagePath = joinTwoImagesVBox.firstImageTextField.getText();
-        String secondImagePath = joinTwoImagesVBox.secondImageTextField.getText();
+        String firstImagePath = joinTwoImagesVBox.firstImageSelector.textField.getText();
+        String secondImagePath = joinTwoImagesVBox.secondImageSelector.textField.getText();
         String extension = joinTwoImagesVBox.fileFormatCombo.getValue();
 
 

@@ -3,6 +3,8 @@ package com.example.mangatool.UI;
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
+import com.example.mangatool.MinorUI.FoldersChooserVBox;
+import com.example.mangatool.MinorUI.FormatChooserVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -97,8 +99,8 @@ public class CropByPixelVBox extends VBox {
 
     public void cropImage(CropByPixelVBox cropByPixelVBox) {
 
-        String inputPath = cropByPixelVBox.foldersChooserVBox.inputPathTextField.getText();
-        String outputPath = cropByPixelVBox.foldersChooserVBox.outputPathTextField.getText();
+        String inputPath = cropByPixelVBox.foldersChooserVBox.inputSelector.textField.getText();
+        String outputPath = cropByPixelVBox.foldersChooserVBox.outputSelector.textField.getText();
         String expectedType = cropByPixelVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = cropByPixelVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = cropByPixelVBox.formatChooserVBox.startIndexTextField.getText();
@@ -116,7 +118,7 @@ public class CropByPixelVBox extends VBox {
                 int left = Integer.parseInt(leftCrop);
                 int right = Integer.parseInt(rightCrop);
 
-                if (inputPath.equals("") || outputPath.equals("")) {
+                if (inputPath.isEmpty() || outputPath.isEmpty()) {
                     updateMessage("Please choose input path, output path");
                     return null;
                 }
@@ -124,7 +126,7 @@ public class CropByPixelVBox extends VBox {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
-                if (topCrop.equals("") || bottomCrop.equals("") || leftCrop.equals("") || rightCrop.equals("")) {
+                if (topCrop.isEmpty() || bottomCrop.isEmpty() || leftCrop.isEmpty() || rightCrop.isEmpty()) {
                     updateMessage("Please input crop data");
                     return null;
                 }
@@ -135,6 +137,12 @@ public class CropByPixelVBox extends VBox {
 
 
                 File[] files = new File(inputPath).listFiles();
+
+                if (files == null) {
+                    updateMessage("Found no file in the input folder");
+                    return null;
+                }
+
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = filterFiles(files);

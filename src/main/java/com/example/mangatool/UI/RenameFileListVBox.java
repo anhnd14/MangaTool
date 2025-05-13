@@ -3,6 +3,8 @@ package com.example.mangatool.UI;
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
+import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -34,9 +36,9 @@ public class RenameFileListVBox extends VBox {
     public Label progressLabel;
     public Button runButton;
     public FormatChooserVBox formatChooserVBox;
-    public List<File> fileList;
     public String inputFolderPath;
-    public TextField outputPathTextField;
+    public List<File> fileList;
+    public TextFieldAndTwoButtonsHBox outputSelector;
 
 
     public RenameFileListVBox() {
@@ -49,22 +51,17 @@ public class RenameFileListVBox extends VBox {
         this.progressBar = new ProgressBar(0);
         this.progressLabel = new Label("");
 
-        Text outputText = new Text(output_path_text);
-        outputPathTextField = new TextField();
-        outputPathTextField.setPrefWidth(long_text_field_pref_width);
-
-        Button outputPathSelectButton = new Button(select_folder_button_text);
-        Button outputPathOpenButton = new Button(open_folder_button_text);
-        outputPathSelectButton.setOnAction(e -> {
+        outputSelector = new TextFieldAndTwoButtonsHBox(output_path_text, select_folder_button_text, open_folder_button_text);
+        outputSelector.firstButton.setOnAction(e -> {
             try {
-                selectFolder(outputPathTextField);
+                selectFolder(outputSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
-        outputPathOpenButton.setOnAction(e -> {
+        outputSelector.secondButton.setOnAction(e -> {
             try {
-                openFolder(outputPathTextField);
+                openFolder(outputSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -87,7 +84,6 @@ public class RenameFileListVBox extends VBox {
             try {
                 openFolder(inputFolderPath);
 
-
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -103,14 +99,8 @@ public class RenameFileListVBox extends VBox {
         hBoxInput.setPadding(new Insets(default_padding));
         hBoxInput.getChildren().addAll(inputText, inputFileListTextField, inputFileListSelectButton, inputFileListOpenButton);
 
-        HBox hBoxOutput = new HBox(default_spacing);
-        hBoxOutput.setSpacing(default_spacing);
-        hBoxOutput.setAlignment(Pos.BASELINE_CENTER);
-        hBoxOutput.setPadding(new Insets(default_padding));
-        hBoxOutput.getChildren().addAll(outputText, this.outputPathTextField, outputPathSelectButton, outputPathOpenButton);
 
-
-        this.getChildren().addAll(formatChooserVBox, hBoxInput, hBoxOutput, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, hBoxInput, outputSelector, runButton, progressBar, progressLabel);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -159,7 +149,7 @@ public class RenameFileListVBox extends VBox {
     public void renameFileList(RenameFileListVBox renameFileListVBox) {
 
 
-        String outputPath = renameFileListVBox.outputPathTextField.getText();
+        String outputPath = renameFileListVBox.outputSelector.textField.getText();
         String expectedType = renameFileListVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = renameFileListVBox.formatChooserVBox.nameFormatCombo.getValue();
         String expectedStartIndex = renameFileListVBox.formatChooserVBox.startIndexTextField.getText();

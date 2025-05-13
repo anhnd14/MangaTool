@@ -1,6 +1,7 @@
 package com.example.mangatool.UI;
 
 
+import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -9,16 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
@@ -35,7 +33,7 @@ public class ImageSplitMultilPartVBox extends VBox {
     public Label progressLabel;
     public Button runButton;
 
-    public TextField outputPathTextField;
+    public TextFieldAndTwoButtonsHBox outputSelector;
 
     public Image image;
     public ImageView imageView;
@@ -90,28 +88,24 @@ public class ImageSplitMultilPartVBox extends VBox {
 
             Line line = new Line(imageBounds.getMinX(), y, imageBounds.getMaxX(), y);
             line.setStroke(Color.rgb(255, 0, 0, 0.8));
-            line.setStrokeWidth(5);
+            line.setStrokeWidth(2);
             pane.getChildren().add(line);
             lineList.add(y);
 
         });
 
 
-        Text outputText = new Text(output_path_text);
-        outputPathTextField = new TextField();
-        outputPathTextField.setPrefWidth(long_text_field_pref_width);
-        Button outputPathSelectButton = new Button(select_folder_button_text);
-        Button outputPathOpenButton = new Button(open_folder_button_text);
-        outputPathSelectButton.setOnAction(e -> {
+        outputSelector = new TextFieldAndTwoButtonsHBox(output_path_text, select_folder_button_text, open_folder_button_text);
+        outputSelector.firstButton.setOnAction(e -> {
             try {
-                selectFolder(outputPathTextField);
+                selectFolder(outputSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
-        outputPathOpenButton.setOnAction(e -> {
+        outputSelector.secondButton.setOnAction(e -> {
             try {
-                openFolder(outputPathTextField);
+                openFolder(outputSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -127,14 +121,8 @@ public class ImageSplitMultilPartVBox extends VBox {
             splitImageMultiParts(this);
         });
 
-        HBox hBoxOutput = new HBox(default_spacing);
-        hBoxOutput.setSpacing(default_spacing);
-        hBoxOutput.setAlignment(Pos.BASELINE_CENTER);
-        hBoxOutput.setPadding(new Insets(default_padding));
-        hBoxOutput.getChildren().addAll(outputText, outputPathTextField, outputPathSelectButton, outputPathOpenButton);
 
-
-        this.getChildren().addAll(openImageButton, hBoxOutput, runAndResetButtonHBox, progressBar, progressLabel, scrollPane);
+        this.getChildren().addAll(openImageButton, outputSelector, runAndResetButtonHBox, progressBar, progressLabel, scrollPane);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 800);
         this.setPadding(new Insets(default_padding));
@@ -174,8 +162,7 @@ public class ImageSplitMultilPartVBox extends VBox {
 
     public void splitImageMultiParts(ImageSplitMultilPartVBox imageSplitMultilPartVBox) {
 
-        String outputPath = imageSplitMultilPartVBox.outputPathTextField.getText();
-
+        String outputPath = imageSplitMultilPartVBox.outputSelector.textField.getText();
 
         Task<Void> task = new Task<>() {
 
