@@ -1,7 +1,7 @@
 package com.example.mangatool.UI;
 
 import static com.example.mangatool.AppFunction.*;
-import com.example.mangatool.TextConfig;
+import static com.example.mangatool.TextConfig.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,13 +22,13 @@ public class RenameVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-    public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
+    public FormatChooserVBox formatChooserVBox;
+    public FoldersChooserVBox foldersChooserVBox;
 
-    int defaultSpacing = TextConfig.default_spacing;
-    int defaultPadding = TextConfig.default_padding;
 
     public RenameVBox() {
-        formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+        formatChooserVBox = new FormatChooserVBox();
+        foldersChooserVBox = new FoldersChooserVBox();
 
         this.runButton = new Button("Run");
         this.progressBar = new ProgressBar(0);
@@ -42,21 +42,21 @@ public class RenameVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(formatAndFolderChooserVBox, runButton, progressBar, progressLabel);
-        this.setSpacing(defaultSpacing);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, runButton, progressBar, progressLabel);
+        this.setSpacing(default_spacing);
         this.setPrefSize(800,600);
-        this.setPadding(new Insets(defaultPadding));
+        this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
 
     public void renameImage(RenameVBox renameVBox) {
 
-        String inputPath = renameVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = renameVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = renameVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = renameVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = renameVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String inputPath = renameVBox.foldersChooserVBox.inputPathTextField.getText();
+        String outputPath = renameVBox.foldersChooserVBox.outputPathTextField.getText();
+        String expectedType = renameVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = renameVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = renameVBox.formatChooserVBox.startIndexTextField.getText();
 
         Task<Void> task = new Task<>() {
 
@@ -91,9 +91,10 @@ public class RenameVBox extends VBox {
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         String imagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
-                        counter += 1;
                         saveImage(originalImage, imagePath, expectedType);
-                        System.out.println("Full image save successfully: " + file.getName());
+                        System.out.println("Image save successfully: " + file.getName());
+                        System.out.println("Image save as: " + String.format("%0" + expectedName + "d", counter) + "." + expectedType);
+                        counter += 1;
                     } catch (Exception exception) {
                         System.err.println("Error processing image: " + file.getName());
                         exception.printStackTrace();

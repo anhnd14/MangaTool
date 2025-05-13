@@ -1,6 +1,6 @@
 package com.example.mangatool.UI;
 
-import com.example.mangatool.TextConfig;
+import static com.example.mangatool.TextConfig.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,16 +24,17 @@ public class ImageSplitVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-    public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
+    public FormatChooserVBox formatChooserVBox;
+    public FoldersChooserVBox foldersChooserVBox;
 
 
-    int defaultSpacing = TextConfig.default_spacing;
-    int defaultPadding = TextConfig.default_padding;
 
 
     public ImageSplitVBox() {
 
-        formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+        formatChooserVBox = new FormatChooserVBox();
+
+        foldersChooserVBox = new FoldersChooserVBox();
 
         this.runButton = new Button("Run");
         this.progressBar = new ProgressBar(0);
@@ -47,20 +48,20 @@ public class ImageSplitVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(formatAndFolderChooserVBox, runButton, progressBar, progressLabel);
-        this.setSpacing(defaultSpacing);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, runButton, progressBar, progressLabel);
+        this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
-        this.setPadding(new Insets(defaultPadding));
+        this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
 
     public void splitImage(ImageSplitVBox imageSplitVBox) {
-        String inputPath = imageSplitVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = imageSplitVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = imageSplitVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = imageSplitVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = imageSplitVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String inputPath = imageSplitVBox.foldersChooserVBox.inputPathTextField.getText();
+        String outputPath = imageSplitVBox.foldersChooserVBox.outputPathTextField.getText();
+        String expectedType = imageSplitVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = imageSplitVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = imageSplitVBox.formatChooserVBox.startIndexTextField.getText();
 
         Task<Void> task = new Task<>() {
 

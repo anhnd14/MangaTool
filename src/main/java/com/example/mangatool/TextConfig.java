@@ -8,6 +8,7 @@ public class TextConfig {
     public static String name_format_text = "Choose Name Format:";
     public static String start_index_text = "Start Index:";
     public static String input_path_text = "Input Path:";
+    public static String input_file_list_text = "Input Files:";
     public static String output_path_text = "Output Path:";
     public static String top_image_text = "Image Path:";
     public static String top_image_height_text = "Height";
@@ -34,7 +35,7 @@ public class TextConfig {
     public static String select_folder_button_text = "Select Folder";
     public static String open_folder_button_text = "Open Folder";
     public static String select_file_button_text = "Select File";
-
+    public static String select_files_button_text = "Select Files";
     public static String reset_all_button_text = "Reset All";
 
     public static String reset_line_button_text = "Reset Lines";

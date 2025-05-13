@@ -1,6 +1,6 @@
 package com.example.mangatool.UI;
 
-import com.example.mangatool.TextConfig;
+import static com.example.mangatool.TextConfig.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,14 +23,15 @@ public class ToGrayScaleVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-    public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
+    public FormatChooserVBox formatChooserVBox;
+    public FoldersChooserVBox foldersChooserVBox;
 
 
-    int defaultSpacing = TextConfig.default_spacing;
-    int defaultPadding = TextConfig.default_padding;
+
 
     public ToGrayScaleVBox() {
-        formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+        formatChooserVBox = new FormatChooserVBox();
+        foldersChooserVBox = new FoldersChooserVBox();
 
         this.runButton = new Button("Run");
         this.progressBar = new ProgressBar(0);
@@ -45,19 +46,19 @@ public class ToGrayScaleVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(formatAndFolderChooserVBox, runButton, progressBar, progressLabel);
-        this.setSpacing(defaultSpacing);
+        this.getChildren().addAll(foldersChooserVBox, runButton, progressBar, progressLabel);
+        this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
-        this.setPadding(new Insets(defaultPadding));
+        this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
     public void toGrayScale(ToGrayScaleVBox toGrayScaleVBox) {
-        String inputPath = toGrayScaleVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = toGrayScaleVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = toGrayScaleVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = toGrayScaleVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = toGrayScaleVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String inputPath = toGrayScaleVBox.foldersChooserVBox.inputPathTextField.getText();
+        String outputPath = toGrayScaleVBox.foldersChooserVBox.outputPathTextField.getText();
+        String expectedType = toGrayScaleVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = toGrayScaleVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = toGrayScaleVBox.formatChooserVBox.startIndexTextField.getText();
 
         Task<Void> task = new Task<>() {
 
@@ -65,7 +66,7 @@ public class ToGrayScaleVBox extends VBox {
             protected Void call() {
 
 
-                if (inputPath.equals("") || outputPath.equals("")) {
+                if (inputPath.isEmpty() || outputPath.isEmpty()) {
                     updateMessage("Please choose input path and output path");
                     return null;
                 }
@@ -82,7 +83,7 @@ public class ToGrayScaleVBox extends VBox {
                 counter = Integer.parseInt(expectedStartIndex);
                 List<File> fileList = filterFiles(files);
 
-                if (fileList.size() == 0) {
+                if (fileList.isEmpty()) {
                     updateMessage("Found no image file in the input folder");
                     return null;
                 }

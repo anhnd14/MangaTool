@@ -45,10 +45,7 @@ public class SettingPopup extends Stage {
 
     Properties properties = new Properties();
 
-    int defaultSpacing = default_spacing;
-    int defaultPadding = default_padding;
 
-    int smallTextFieldPrefWidth = small_text_field_pref_width;
 
     public SettingPopup() throws Exception {
         this.initModality(Modality.APPLICATION_MODAL);
@@ -78,56 +75,56 @@ public class SettingPopup extends Stage {
         Text defaultTopCropTitle = new Text(top_crop);
         Text defaultBottomCropTitle = new Text(bottom_crop);
         defaultTopCropTextField = new TextField(defaultTopCropValue);
-        defaultTopCropTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultTopCropTextField.setPrefWidth(small_text_field_pref_width);
         defaultBottomCropTextField = new TextField(defaultBottomCropValue);
-        defaultBottomCropTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultBottomCropTextField.setPrefWidth(small_text_field_pref_width);
 
         Text defaultLeftCropTitle = new Text(left_crop);
         Text defaultRightCropTitle = new Text(right_crop);
         defaultLeftCropTextField = new TextField(defaultLeftCropValue);
-        defaultLeftCropTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultLeftCropTextField.setPrefWidth(small_text_field_pref_width);
         defaultRightCropTextField = new TextField(defaultRightCropValue);
-        defaultRightCropTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultRightCropTextField.setPrefWidth(small_text_field_pref_width);
 
 
         Text defaultTopImageHeightTitle = new Text(top_image_height_text);
         Text defaultTopImageOpacityTitle = new Text(top_image_opacity_text);
         defaultTopImageHeightTextField = new TextField(defaultTopImageHeightValue);
-        defaultTopImageHeightTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultTopImageHeightTextField.setPrefWidth(small_text_field_pref_width);
         defaultTopImageOpacityTextField = new TextField(defaultTopImageOpacityValue);
-        defaultTopImageOpacityTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultTopImageOpacityTextField.setPrefWidth(small_text_field_pref_width);
 
 
         Text defaultTopImageXCoordinateTitle = new Text(top_image_x_coordinate_text);
         Text defaultTopImageYCoordinateTitle = new Text(top_image_y_coordinate_text);
         defaultTopImageXCoordinateTextField = new TextField(defaultTopImageXCoordinateValue);
-        defaultTopImageXCoordinateTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultTopImageXCoordinateTextField.setPrefWidth(small_text_field_pref_width);
         defaultTopImageYCoordinateTextField = new TextField(defaultTopImageYCoordinateValue);
-        defaultTopImageYCoordinateTextField.setPrefWidth(smallTextFieldPrefWidth);
+        defaultTopImageYCoordinateTextField.setPrefWidth(small_text_field_pref_width);
 
 
-        HBox defaultTopAndBottomCropHBox = new HBox(defaultSpacing);
-        defaultTopAndBottomCropHBox.setSpacing(defaultSpacing);
-        defaultTopAndBottomCropHBox.setPadding(new Insets(defaultPadding));
+        HBox defaultTopAndBottomCropHBox = new HBox(default_spacing);
+        defaultTopAndBottomCropHBox.setSpacing(default_spacing);
+        defaultTopAndBottomCropHBox.setPadding(new Insets(default_padding));
         defaultTopAndBottomCropHBox.getChildren().addAll(defaultTopCropTitle, defaultTopCropTextField, defaultBottomCropTitle, defaultBottomCropTextField);
         defaultTopAndBottomCropHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        HBox defaultLeftAndRightCropHBox = new HBox(defaultSpacing);
-        defaultLeftAndRightCropHBox.setSpacing(defaultSpacing);
-        defaultLeftAndRightCropHBox.setPadding(new Insets(defaultPadding));
+        HBox defaultLeftAndRightCropHBox = new HBox(default_spacing);
+        defaultLeftAndRightCropHBox.setSpacing(default_spacing);
+        defaultLeftAndRightCropHBox.setPadding(new Insets(default_padding));
         defaultLeftAndRightCropHBox.getChildren().addAll(defaultLeftCropTitle, defaultLeftCropTextField, defaultRightCropTitle, defaultRightCropTextField);
         defaultLeftAndRightCropHBox.setAlignment(Pos.BASELINE_CENTER);
 
 
-        HBox defaultTopImageHeightAndOpacityHBox = new HBox(defaultSpacing);
-        defaultTopImageHeightAndOpacityHBox.setSpacing(defaultSpacing);
-        defaultTopImageHeightAndOpacityHBox.setPadding(new Insets(defaultPadding));
+        HBox defaultTopImageHeightAndOpacityHBox = new HBox(default_spacing);
+        defaultTopImageHeightAndOpacityHBox.setSpacing(default_spacing);
+        defaultTopImageHeightAndOpacityHBox.setPadding(new Insets(default_padding));
         defaultTopImageHeightAndOpacityHBox.getChildren().addAll(defaultTopImageHeightTitle, defaultTopImageHeightTextField, defaultTopImageOpacityTitle, defaultTopImageOpacityTextField);
         defaultTopImageHeightAndOpacityHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        HBox defaultTopImageCoordinateHBox = new HBox(defaultSpacing);
-        defaultTopImageCoordinateHBox.setSpacing(defaultSpacing);
-        defaultTopImageCoordinateHBox.setPadding(new Insets(defaultPadding));
+        HBox defaultTopImageCoordinateHBox = new HBox(default_spacing);
+        defaultTopImageCoordinateHBox.setSpacing(default_spacing);
+        defaultTopImageCoordinateHBox.setPadding(new Insets(default_padding));
         defaultTopImageCoordinateHBox.getChildren().addAll(defaultTopImageXCoordinateTitle, defaultTopImageXCoordinateTextField, defaultTopImageYCoordinateTitle, defaultTopImageYCoordinateTextField);
         defaultTopImageCoordinateHBox.setAlignment(Pos.BASELINE_CENTER);
 
@@ -143,16 +140,16 @@ public class SettingPopup extends Stage {
             this.close();
         });
 
-        HBox buttonHBox = new HBox(defaultSpacing);
-        buttonHBox.setSpacing(defaultSpacing);
-        buttonHBox.setPadding(new Insets(defaultPadding));
+        HBox buttonHBox = new HBox(default_spacing);
+        buttonHBox.setSpacing(default_spacing);
+        buttonHBox.setPadding(new Insets(default_padding));
         buttonHBox.getChildren().addAll(saveButton, closeButton);
         buttonHBox.setAlignment(Pos.CENTER_RIGHT);
 
 
-        VBox mainVBox = new VBox(defaultSpacing);
-        mainVBox.setSpacing(defaultSpacing);
-        mainVBox.setPadding(new Insets(defaultPadding));
+        VBox mainVBox = new VBox(default_spacing);
+        mainVBox.setSpacing(default_spacing);
+        mainVBox.setPadding(new Insets(default_padding));
         mainVBox.setAlignment(Pos.CENTER);
         mainVBox.getChildren().addAll(
                 defaultSettingTitle,

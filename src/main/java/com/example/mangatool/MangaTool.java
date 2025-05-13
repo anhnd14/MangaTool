@@ -19,6 +19,7 @@ public class MangaTool extends Application {
         ImageSplitVBox imageSplitVBox = new ImageSplitVBox();
         CropByPixelVBox cropByPixelVBox = new CropByPixelVBox();
         RenameVBox renameVBox = new RenameVBox();
+        RenameFileListVBox renameFileListVBox = new RenameFileListVBox();
         ToGrayScaleVBox toGrayScaleVBox = new ToGrayScaleVBox();
         CropAndGrayscaleVBox cropAndGrayscaleVBox = new CropAndGrayscaleVBox();
         OverlayImageVBox overlayImageVBox = new OverlayImageVBox();
@@ -64,16 +65,18 @@ public class MangaTool extends Application {
         Tab splitTab = new Tab("ImageSplit", new Label("ImageSplit"));
         Tab cropTab = new Tab("Crop Image", new Label("CropImage"));
         Tab renameTab = new Tab("Rename", new Label("Rename"));
+        Tab renameFilesListTab = new Tab("Rename Files", new Label("Rename Files"));
         Tab toGrayScaleTab = new Tab("To Grayscale", new Label("ToGrayscale"));
 //        Tab cropAndGrayscaleTab = new Tab("Crop And Grayscale", new Label("CropAndGrayscale"));
         Tab overlayImageTab = new Tab("AddLogo", new Label("AddLogo"));
         Tab joinImagesTab = new Tab("Join Images", new Label("Join Images"));
         Tab imageSplitMultiPartTab = new Tab("Split Images", new Label("Split Images"));
-        tabPane.getTabs().addAll(splitTab, cropTab, renameTab, toGrayScaleTab, overlayImageTab, joinImagesTab, imageSplitMultiPartTab);
+        tabPane.getTabs().addAll(splitTab, cropTab, renameTab, renameFilesListTab, toGrayScaleTab, overlayImageTab, joinImagesTab, imageSplitMultiPartTab);
 
         splitTab.setContent(imageSplitVBox);
         cropTab.setContent(cropByPixelVBox);
         renameTab.setContent(renameVBox);
+        renameFilesListTab.setContent(renameFileListVBox);
         toGrayScaleTab.setContent(toGrayScaleVBox);
 //        cropAndGrayscaleTab.setContent(cropAndGrayscaleVBox);
         overlayImageTab.setContent(overlayImageVBox);

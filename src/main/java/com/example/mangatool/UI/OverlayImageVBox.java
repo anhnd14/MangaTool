@@ -3,7 +3,6 @@ package com.example.mangatool.UI;
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
-import com.example.mangatool.TextConfig;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -29,7 +28,8 @@ public class OverlayImageVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-    public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
+    public FormatChooserVBox formatChooserVBox;
+    public FoldersChooserVBox foldersChooserVBox;
     public TextField topImagePathTextField;
     public TextField topImageHeightTextField;
     public TextField topImageOpacityTextField;
@@ -40,7 +40,8 @@ public class OverlayImageVBox extends VBox {
 
     public OverlayImageVBox() {
 
-        formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+        formatChooserVBox = new FormatChooserVBox();
+        foldersChooserVBox = new FoldersChooserVBox();
 
         ObservableList<String> position = FXCollections.observableArrayList("Top Left", "Top Right", "Bottom Left", "Bottom Right");
 
@@ -118,18 +119,18 @@ public class OverlayImageVBox extends VBox {
         this.setSpacing(default_spacing);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
-        this.getChildren().addAll(formatAndFolderChooserVBox, topImagePathHBox, topImageHeightAndOpacityHBox, topImageCoordinateHBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topImagePathHBox, topImageHeightAndOpacityHBox, topImageCoordinateHBox, runButton, progressBar, progressLabel);
 
     }
 
     public void overlayImage(OverlayImageVBox overlayImageVBox) {
 
         String imgPath = overlayImageVBox.topImagePathTextField.getText();
-        String inputPath = overlayImageVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = overlayImageVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = overlayImageVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = overlayImageVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = overlayImageVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String inputPath = overlayImageVBox.foldersChooserVBox.inputPathTextField.getText();
+        String outputPath = overlayImageVBox.foldersChooserVBox.outputPathTextField.getText();
+        String expectedType = overlayImageVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = overlayImageVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = overlayImageVBox.formatChooserVBox.startIndexTextField.getText();
         String topImageHeight = overlayImageVBox.topImageHeightTextField.getText();
         String topImageOpacity = overlayImageVBox.topImageOpacityTextField.getText();
         String topImageX = overlayImageVBox.topImageXCoordinateTextField.getText();

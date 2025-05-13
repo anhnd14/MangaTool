@@ -25,7 +25,8 @@ public class CropByPixelVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-    public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
+    public FormatChooserVBox formatChooserVBox;
+    public FoldersChooserVBox foldersChooserVBox;
     public TextField topCropTextField;
     public TextField bottomCropTextField;
     public TextField leftCropTextField;
@@ -34,7 +35,8 @@ public class CropByPixelVBox extends VBox {
 
     public CropByPixelVBox() {
 
-        formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+        formatChooserVBox = new FormatChooserVBox();
+        foldersChooserVBox = new FoldersChooserVBox();
 
         this.runButton = new Button("Run");
         this.progressBar = new ProgressBar(0);
@@ -86,7 +88,7 @@ public class CropByPixelVBox extends VBox {
         leftAndRightCropHBox.getChildren().addAll(leftCropTitle, leftCropTextField, rightCropTitle, rightCropTextField);
         leftAndRightCropHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        this.getChildren().addAll(formatAndFolderChooserVBox, topAndBottomCropHBox, leftAndRightCropHBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topAndBottomCropHBox, leftAndRightCropHBox, runButton, progressBar, progressLabel);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -95,11 +97,11 @@ public class CropByPixelVBox extends VBox {
 
     public void cropImage(CropByPixelVBox cropByPixelVBox) {
 
-        String inputPath = cropByPixelVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = cropByPixelVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = cropByPixelVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = cropByPixelVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = cropByPixelVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String inputPath = cropByPixelVBox.foldersChooserVBox.inputPathTextField.getText();
+        String outputPath = cropByPixelVBox.foldersChooserVBox.outputPathTextField.getText();
+        String expectedType = cropByPixelVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = cropByPixelVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = cropByPixelVBox.formatChooserVBox.startIndexTextField.getText();
         String topCrop = cropByPixelVBox.topCropTextField.getText();
         String bottomCrop = cropByPixelVBox.bottomCropTextField.getText();
         String leftCrop = cropByPixelVBox.leftCropTextField.getText();

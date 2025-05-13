@@ -16,7 +16,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static com.example.mangatool.AppFunction.*;
@@ -26,7 +25,8 @@ public class CropAndGrayscaleVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-    public FormatAndFolderChooserVBox formatAndFolderChooserVBox;
+    public FormatChooserVBox formatChooserVBox;
+    public FoldersChooserVBox foldersChooserVBox;
     public TextField topCropTextField;
     public TextField bottomCropTextField;
     public TextField leftCropTextField;
@@ -36,7 +36,9 @@ public class CropAndGrayscaleVBox extends VBox {
 
     public CropAndGrayscaleVBox() {
 
-        formatAndFolderChooserVBox = new FormatAndFolderChooserVBox();
+        formatChooserVBox = new FormatChooserVBox();
+
+        foldersChooserVBox = new FoldersChooserVBox();
 
         this.runButton = new Button("Run");
         this.progressBar = new ProgressBar(0);
@@ -84,7 +86,7 @@ public class CropAndGrayscaleVBox extends VBox {
         leftAndRightCropHBox.getChildren().addAll(leftCropTitle, leftCropTextField, rightCropTitle, rightCropTextField);
         leftAndRightCropHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        this.getChildren().addAll(formatAndFolderChooserVBox, topAndBottomCropHBox, leftAndRightCropHBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topAndBottomCropHBox, leftAndRightCropHBox, runButton, progressBar, progressLabel);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -94,11 +96,11 @@ public class CropAndGrayscaleVBox extends VBox {
 
     public void cropAndGrayScaleImage(CropAndGrayscaleVBox cropAndGrayscaleVBox) {
 
-        String inputPath = cropAndGrayscaleVBox.formatAndFolderChooserVBox.inputPathTextField.getText();
-        String outputPath = cropAndGrayscaleVBox.formatAndFolderChooserVBox.outputPathTextField.getText();
-        String expectedType = cropAndGrayscaleVBox.formatAndFolderChooserVBox.fileFormatCombo.getValue();
-        String expectedName = cropAndGrayscaleVBox.formatAndFolderChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = cropAndGrayscaleVBox.formatAndFolderChooserVBox.startIndexTextField.getText();
+        String inputPath = cropAndGrayscaleVBox.foldersChooserVBox.inputPathTextField.getText();
+        String outputPath = cropAndGrayscaleVBox.foldersChooserVBox.outputPathTextField.getText();
+        String expectedType = cropAndGrayscaleVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = cropAndGrayscaleVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = cropAndGrayscaleVBox.formatChooserVBox.startIndexTextField.getText();
         String topCrop = cropAndGrayscaleVBox.topCropTextField.getText();
         String bottomCrop = cropAndGrayscaleVBox.bottomCropTextField.getText();
         String leftCrop = cropAndGrayscaleVBox.leftCropTextField.getText();
@@ -106,14 +108,14 @@ public class CropAndGrayscaleVBox extends VBox {
 
         Task<Void> task = new Task<>() {
             @Override
-            protected Void call() {
+            protected Void call() throws Exception {
 
                 int top = Integer.parseInt(topCrop);
                 int bottom = Integer.parseInt(bottomCrop);
                 int left = Integer.parseInt(leftCrop);
                 int right = Integer.parseInt(rightCrop);
 
-                if (inputPath.equals("") || outputPath.equals("")) {
+                if (inputPath.isEmpty() || outputPath.isEmpty()) {
                     updateMessage("Please choose input path, output path");
                     return null;
                 }
@@ -121,7 +123,7 @@ public class CropAndGrayscaleVBox extends VBox {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
-                if (topCrop.equals("") || bottomCrop.equals("") || leftCrop.equals("") || rightCrop.equals("")) {
+                if (topCrop.isEmpty() || bottomCrop.isEmpty() || leftCrop.isEmpty() || rightCrop.isEmpty()) {
                     updateMessage("Please input crop data");
                     return null;
                 }
@@ -166,9 +168,9 @@ public class CropAndGrayscaleVBox extends VBox {
                         saveImage(resImage, outImagePath, "png");
                         System.out.println("Full image save successfully: " + file.getName());
 
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         System.err.println("Error processing image: " + file.getName());
-                        e.printStackTrace();
+                        throw e;
                     }
                 }
                 updateProgress(100, 100);

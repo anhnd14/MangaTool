@@ -201,6 +201,18 @@ public class AppFunction {
         }
     }
 
+    public static void openFolder(String pathToOpen) throws IOException {
+        if (pathToOpen.isEmpty()) {
+            System.out.println("Folder not found");
+        }
+        try {
+            Desktop.getDesktop().open(new File(pathToOpen));
+        } catch (Exception exception) {
+            System.out.println("Folder not found");
+            throw exception;
+        }
+    }
+
     public static void saveData(String key, String value) {
         try {
             Properties properties = new Properties();
@@ -214,6 +226,27 @@ public class AppFunction {
 
     //Lọc các file ảnh
     public static List<File> filterFiles(File[] files) {
+        List<File> fileList = new ArrayList<>();
+
+        for (File file : files) {
+            if (file.isFile()) {
+                String fileName = file.getName();
+                int lastDotIndex = fileName.lastIndexOf('.');
+                String extension = "";
+                if (lastDotIndex > 0) {
+                    extension = fileName.substring(lastDotIndex + 1);
+                    extension = extension.toLowerCase(); // normalize to lower case
+                }
+                if (extension.equals("jpg") || extension.equals("png") || extension.equals("bmp") || extension.equals("tiff") || extension.equals("webp")) {
+                    fileList.add(file);
+                }
+            }
+        }
+
+        return fileList;
+    }
+
+    public static List<File> filterFiles(List<File> files) {
         List<File> fileList = new ArrayList<>();
 
         for (File file : files) {

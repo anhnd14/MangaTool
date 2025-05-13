@@ -30,18 +30,27 @@ public class JoinTwoImagesVBox extends VBox {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button runButton;
-
-
+    public ComboBox<String> fileFormatCombo;
     public TextField firstImageTextField;
     public TextField secondImageTextField;
-
     public TextField outFileNameTextField;
-
     public ComboBox<String> joinDirection;
 
 
 
     public JoinTwoImagesVBox() {
+
+        ObservableList<String> formats = FXCollections.observableArrayList("jpg", "png", "bmp", "tiff", "webp");
+
+        fileFormatCombo = new ComboBox<>(formats);
+        fileFormatCombo.getSelectionModel().selectFirst();
+        Text formatTitle = new Text(file_format_text);
+
+        HBox hBoxChooseFormat = new HBox(default_spacing);
+        hBoxChooseFormat.setSpacing(default_spacing);
+        hBoxChooseFormat.setAlignment(Pos.CENTER);
+        hBoxChooseFormat.setPadding(new Insets(default_padding));
+        hBoxChooseFormat.getChildren().addAll(formatTitle, this.fileFormatCombo);
 
         Text firstImageTitle = new Text(choose_image_text);
         firstImageTextField = new TextField();
@@ -114,36 +123,26 @@ public class JoinTwoImagesVBox extends VBox {
 
         runButton.setOnAction(_ -> {
             try {
-                System.out.print("join image button pressed");
                 joinImages(this);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
 
-        this.getChildren().addAll(firstImagePathHBox, secondImagePathHBox,outFileNameAndDirectionHBox, openFolderButton, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(hBoxChooseFormat, firstImagePathHBox, secondImagePathHBox,outFileNameAndDirectionHBox, openFolderButton, runButton, progressBar, progressLabel);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
-    public void openFolder(String pathToOpen) {
-        if (pathToOpen.isEmpty()) {
-            System.out.print("Folder not found");
-        }
-        try {
-            Desktop.getDesktop().open(new File(pathToOpen));
-        } catch (Exception exception) {
-            System.out.print("Folder not found");
-            exception.printStackTrace();
-        }
-    }
+
 
 
     public void joinImages(JoinTwoImagesVBox joinTwoImagesVBox) {
         String firstImagePath = joinTwoImagesVBox.firstImageTextField.getText();
         String secondImagePath = joinTwoImagesVBox.secondImageTextField.getText();
+        String extension = joinTwoImagesVBox.fileFormatCombo.getValue();
 
 
         Task<Void> task = new Task<>() {
@@ -175,7 +174,7 @@ public class JoinTwoImagesVBox extends VBox {
                         resImage = joinVertical(firstImageFile, secondImageFile);
                     }
 
-                    saveImage(resImage, outImagePath, "png");
+                    saveImage(resImage, outImagePath, extension);
                     System.out.println("Image save successfully");
 
                 } catch (Exception e) {
@@ -192,14 +191,6 @@ public class JoinTwoImagesVBox extends VBox {
             private String getOutImagePath(File firstImageFile) {
                 String fileName = firstImageFile.getName();
                 int lastDotIndex = fileName.lastIndexOf('.');
-                String extension = "";
-                if (lastDotIndex > 0) {
-                    extension = fileName.substring(lastDotIndex + 1);
-                    extension = extension.toLowerCase(); // normalize to lower case
-                }
-                if (!extension.equals("jpg") && !extension.equals("png") && !extension.equals("bmp") && !extension.equals("tiff")) {
-                    extension = "png";
-                }
 
                 int fileNameLength = fileName.length();
                 String outputPath = firstImagePath.substring(0, firstImagePath.length() - fileNameLength - 1);
@@ -217,9 +208,11 @@ public class JoinTwoImagesVBox extends VBox {
                 BufferedImage firstImg = ImageIO.read(firstImageFile);
                 BufferedImage secondImg = ImageIO.read(secondImageFile);
 
+                System.out.println(firstImg.getType());
+
                 int largerHeight = Math.max(firstImg.getHeight(), secondImg.getHeight());
 
-                BufferedImage resImage = new BufferedImage(firstImg.getWidth() + secondImg.getWidth(), largerHeight, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage resImage = new BufferedImage(firstImg.getWidth() + secondImg.getWidth(), largerHeight, firstImg.getType());
 
                 Graphics2D g = resImage.createGraphics();
                 g.drawImage(firstImg, 0, 0, null);
@@ -233,7 +226,7 @@ public class JoinTwoImagesVBox extends VBox {
                 BufferedImage firstImg = ImageIO.read(firstImageFile);
                 BufferedImage secondImg = ImageIO.read(secondImageFile);
                 int largerWidth = Math.max(firstImg.getWidth(), secondImg.getWidth());
-                BufferedImage resImage = new BufferedImage(largerWidth, firstImg.getHeight() + secondImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                BufferedImage resImage = new BufferedImage(largerWidth, firstImg.getHeight() + secondImg.getHeight(), firstImg.getType());
 
                 Graphics2D g = resImage.createGraphics();
                 g.drawImage(firstImg, 0, 0, null);
