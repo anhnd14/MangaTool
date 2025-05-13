@@ -4,6 +4,7 @@ import static com.example.mangatool.TextConfig.*;
 
 import com.example.mangatool.MinorUI.FoldersChooserVBox;
 import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.ProgressVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,9 +24,7 @@ import java.util.List;
 import static com.example.mangatool.AppFunction.*;
 
 public class ToGrayScaleVBox extends VBox {
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
+    public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public FoldersChooserVBox foldersChooserVBox;
 
@@ -36,11 +35,9 @@ public class ToGrayScaleVBox extends VBox {
         formatChooserVBox = new FormatChooserVBox();
         foldersChooserVBox = new FoldersChooserVBox();
 
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
+        progressVBox = new ProgressVBox();
 
-        runButton.setOnAction(_ -> {
+        progressVBox.runButton.setOnAction(_ -> {
             try {
 //                splitImage(this);
                 toGrayScale(this);
@@ -49,7 +46,7 @@ public class ToGrayScaleVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(foldersChooserVBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(foldersChooserVBox, progressVBox);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -135,8 +132,8 @@ public class ToGrayScaleVBox extends VBox {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 

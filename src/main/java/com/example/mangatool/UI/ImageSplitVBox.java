@@ -4,6 +4,7 @@ import static com.example.mangatool.TextConfig.*;
 
 import com.example.mangatool.MinorUI.FoldersChooserVBox;
 import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.ProgressVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,9 +25,8 @@ import java.util.List;
 
 public class ImageSplitVBox extends VBox {
 
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
+
+    public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public FoldersChooserVBox foldersChooserVBox;
 
@@ -36,14 +36,10 @@ public class ImageSplitVBox extends VBox {
     public ImageSplitVBox() {
 
         formatChooserVBox = new FormatChooserVBox();
-
         foldersChooserVBox = new FoldersChooserVBox();
+        progressVBox = new ProgressVBox();
 
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
-
-        runButton.setOnAction(_ -> {
+        progressVBox.runButton.setOnAction(_ -> {
             try {
                 splitImage(this);
             } catch (Exception exception) {
@@ -51,7 +47,7 @@ public class ImageSplitVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, progressVBox);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -141,8 +137,8 @@ public class ImageSplitVBox extends VBox {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 

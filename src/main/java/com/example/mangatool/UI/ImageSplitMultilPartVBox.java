@@ -1,14 +1,14 @@
 package com.example.mangatool.UI;
 
 
+import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.ProgressVBox;
 import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,28 +29,26 @@ import static com.example.mangatool.AppFunction.*;
 
 public class ImageSplitMultilPartVBox extends VBox {
 
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
-
+    public ProgressVBox progressVBox;
+    public FormatChooserVBox formatChooserVBox;
     public TextFieldAndTwoButtonsHBox outputSelector;
-
     public Image image;
     public ImageView imageView;
-
     public Pane pane;
-
     public double ratio;
-
     public List<Double> lineList;
 
     public ImageSplitMultilPartVBox() {
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
+
+        progressVBox = new ProgressVBox();
+        progressVBox.runButton.setOnAction(_ -> {
+            splitImageMultiParts(this);
+        });
+
+        formatChooserVBox = new FormatChooserVBox();
+
 
         lineList = new ArrayList<>();
-
 
         Button resetAllButton;
         Button resetLineButton;
@@ -83,7 +81,6 @@ public class ImageSplitMultilPartVBox extends VBox {
         pane.setOnMouseClicked(e -> {
 
             Bounds imageBounds = imageView.getBoundsInParent();
-
             double y = e.getY();
 
             Line line = new Line(imageBounds.getMinX(), y, imageBounds.getMaxX(), y);
@@ -96,14 +93,14 @@ public class ImageSplitMultilPartVBox extends VBox {
 
 
         outputSelector = new TextFieldAndTwoButtonsHBox(output_path_text, select_folder_button_text, open_folder_button_text);
-        outputSelector.firstButton.setOnAction(e -> {
+        outputSelector.firstButton.setOnAction(_ -> {
             try {
                 selectFolder(outputSelector.textField);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
-        outputSelector.secondButton.setOnAction(e -> {
+        outputSelector.secondButton.setOnAction(_ -> {
             try {
                 openFolder(outputSelector.textField);
             } catch (Exception exception) {
@@ -112,17 +109,14 @@ public class ImageSplitMultilPartVBox extends VBox {
         });
 
 
-        HBox runAndResetButtonHBox = new HBox();
-        runAndResetButtonHBox.setPadding(new Insets(default_padding));
-        runAndResetButtonHBox.setSpacing(default_spacing);
-        runAndResetButtonHBox.setAlignment(Pos.BASELINE_CENTER);
-        runAndResetButtonHBox.getChildren().addAll(runButton, resetAllButton, resetLineButton);
-        runButton.setOnAction(_ -> {
-            splitImageMultiParts(this);
-        });
+        HBox resetButtonHBox = new HBox();
+        resetButtonHBox.setPadding(new Insets(default_padding));
+        resetButtonHBox.setSpacing(default_spacing);
+        resetButtonHBox.setAlignment(Pos.BASELINE_CENTER);
+        resetButtonHBox.getChildren().addAll(resetAllButton, resetLineButton);
 
 
-        this.getChildren().addAll(openImageButton, outputSelector, runAndResetButtonHBox, progressBar, progressLabel, scrollPane);
+        this.getChildren().addAll(formatChooserVBox, openImageButton, outputSelector, resetButtonHBox, progressVBox, scrollPane);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 800);
         this.setPadding(new Insets(default_padding));
@@ -163,15 +157,25 @@ public class ImageSplitMultilPartVBox extends VBox {
     public void splitImageMultiParts(ImageSplitMultilPartVBox imageSplitMultilPartVBox) {
 
         String outputPath = imageSplitMultilPartVBox.outputSelector.textField.getText();
+        String expectedType = imageSplitMultilPartVBox.formatChooserVBox.fileFormatCombo.getValue();
+        String expectedName = imageSplitMultilPartVBox.formatChooserVBox.nameFormatCombo.getValue();
+        String expectedStartIndex = imageSplitMultilPartVBox.formatChooserVBox.startIndexTextField.getText();
 
         Task<Void> task = new Task<>() {
 
             @Override
             protected Void call() throws Exception {
 
-
-                if (outputPath.equals("")) {
+                if (outputPath.isEmpty()) {
                     updateMessage("Please choose output path");
+                    return null;
+                }
+                if (expectedStartIndex.isEmpty()) {
+                    updateMessage("Please choose start index");
+                    return null;
+                }
+                if (!isPositiveInteger(expectedStartIndex)) {
+                    updateMessage("Please choose expected start index");
                     return null;
                 }
                 if (!Files.isDirectory(Paths.get(outputPath))) {
@@ -187,16 +191,16 @@ public class ImageSplitMultilPartVBox extends VBox {
                     return null;
                 }
 
-                int counter = lineList.size();
-
+                int counter;
+                counter = Integer.parseInt(expectedStartIndex);
                 System.out.println(image.getUrl());
-
                 BufferedImage inputImage = ImageIO.read(new File(image.getUrl()));
-
-
                 Collections.sort(lineList);
 
-                for (int i = 0; i <= counter; i++) {
+                for (int i = 0; i <= lineList.size(); i++) {
+
+                    updateProgress(i, lineList.size() + 1);
+                    updateMessage(i + "/" + lineList.size() + 1);
 
                     int start;
                     int end;
@@ -208,25 +212,19 @@ public class ImageSplitMultilPartVBox extends VBox {
                         start = (int) x;
                     }
 
-                    if (i == counter) {
+                    if (i == lineList.size()) {
                         end = (int) image.getHeight();
                     } else {
                         double x = lineList.get(i)/ratio;
                         end = (int)x;
                     }
 
-
-                    BufferedImage resImage;
-
-                    resImage = inputImage.getSubimage(0, start, inputImage.getWidth(), end - start);
-
-
-                    String outImagePath = outputPath + File.separator + String.format("%0" + 3 + "d", i) + "." + "png";
-
-                    saveImage(resImage, outImagePath, "png");
+                    BufferedImage resImage = inputImage.getSubimage(0, start, inputImage.getWidth(), end - start);
+                    String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
+                    counter += 1;
+                    saveImage(resImage, outImagePath, expectedType);
 
                 }
-
 
                 updateProgress(100, 100);
                 updateMessage("Processing complete.");
@@ -236,8 +234,8 @@ public class ImageSplitMultilPartVBox extends VBox {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 

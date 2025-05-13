@@ -4,37 +4,28 @@ import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
 import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.ProgressVBox;
 import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 
 public class RenameFileListVBox extends VBox {
 
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
+
+    public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public String inputFolderPath;
     public List<File> fileList;
@@ -47,12 +38,10 @@ public class RenameFileListVBox extends VBox {
 
         formatChooserVBox = new FormatChooserVBox();
 
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
+        progressVBox = new ProgressVBox();
 
         outputSelector = new TextFieldAndTwoButtonsHBox(output_path_text, select_folder_button_text, open_folder_button_text);
-        outputSelector.firstButton.setOnAction(e -> {
+        outputSelector.firstButton.setOnAction(_ -> {
             try {
                 selectFolder(outputSelector.textField);
             } catch (Exception exception) {
@@ -75,12 +64,15 @@ public class RenameFileListVBox extends VBox {
         Button inputFileListOpenButton = new Button(open_folder_button_text);
         inputFileListSelectButton.setOnAction(e -> {
             try {
-                selectFiles(inputFileListTextField);
+//                selectFiles(inputFileListTextField);
+                fileList = filesSelector(inputFileListTextField);
+                inputFolderPath = fileList.getFirst().getParent();
+
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
-        inputFileListOpenButton.setOnAction(e -> {
+        inputFileListOpenButton.setOnAction(_ -> {
             try {
                 openFolder(inputFolderPath);
 
@@ -89,9 +81,7 @@ public class RenameFileListVBox extends VBox {
             }
         });
 
-        runButton.setOnAction(_ -> {
-            renameFileList(this);
-        });
+        progressVBox.runButton.setOnAction(_ -> renameFileList(this));
 
         HBox hBoxInput = new HBox(default_spacing);
         hBoxInput.setSpacing(default_spacing);
@@ -100,49 +90,11 @@ public class RenameFileListVBox extends VBox {
         hBoxInput.getChildren().addAll(inputText, inputFileListTextField, inputFileListSelectButton, inputFileListOpenButton);
 
 
-        this.getChildren().addAll(formatChooserVBox, hBoxInput, outputSelector, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, hBoxInput, outputSelector, progressVBox);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
-    }
-
-    private void selectFiles(TextField inputFileListTextField) throws Exception {
-        String lastOpenPath = "";
-        Properties properties = new Properties();
-
-        try {
-            properties.load(new FileInputStream(FILENAME));
-        } catch (Exception exception) {
-            properties.store(new FileOutputStream(FILENAME), null);
-        }
-        if (properties.containsKey("lastOpenPath")) {
-            lastOpenPath = loadData("lastOpenPath");
-        }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Files");
-
-        Path checkPath = Paths.get(lastOpenPath);
-        boolean pathExist = Files.isDirectory(checkPath) && Files.exists(checkPath);
-
-        if (!lastOpenPath.isEmpty() && pathExist) {
-            fileChooser.setInitialDirectory(new File(lastOpenPath));
-        }
-
-        fileList = fileChooser.showOpenMultipleDialog(null);
-        if (!fileList.isEmpty()) {
-            inputFolderPath = fileList.getFirst().getParent();
-        }
-
-        List<String> fileListName = new ArrayList<>();
-
-        for (File file : fileList) {
-            fileListName.add(file.getName());
-        }
-
-        inputFileListTextField.setText(fileListName.toString());
-
     }
 
 
@@ -202,8 +154,8 @@ public class RenameFileListVBox extends VBox {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 

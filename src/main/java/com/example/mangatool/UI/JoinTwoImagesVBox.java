@@ -5,6 +5,7 @@ import static com.example.mangatool.AppFunction.*;
 
 import static com.example.mangatool.TextConfig.*;
 
+import com.example.mangatool.MinorUI.ProgressVBox;
 import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,9 +29,7 @@ import java.io.File;
 public class JoinTwoImagesVBox extends VBox {
 
 
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
+    public ProgressVBox progressVBox;
     public ComboBox<String> fileFormatCombo;
     public TextFieldAndTwoButtonsHBox firstImageSelector;
     public TextFieldAndTwoButtonsHBox secondImageSelector;
@@ -105,12 +104,10 @@ public class JoinTwoImagesVBox extends VBox {
         Button openFolderButton = openFolderButton();
 
 
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
+        progressVBox = new ProgressVBox();
 
 
-        runButton.setOnAction(_ -> {
+        progressVBox.runButton.setOnAction(_ -> {
             try {
                 joinImages(this);
             } catch (Exception exception) {
@@ -118,7 +115,7 @@ public class JoinTwoImagesVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(hBoxChooseFormat, firstImageSelector, secondImageSelector,outFileNameAndDirectionHBox, openFolderButton, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(hBoxChooseFormat, firstImageSelector, secondImageSelector,outFileNameAndDirectionHBox, openFolderButton, progressVBox);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -238,8 +235,8 @@ public class JoinTwoImagesVBox extends VBox {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 

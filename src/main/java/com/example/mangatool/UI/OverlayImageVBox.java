@@ -5,6 +5,7 @@ import static com.example.mangatool.TextConfig.*;
 
 import com.example.mangatool.MinorUI.FoldersChooserVBox;
 import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.ProgressVBox;
 import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,9 +29,7 @@ import java.util.List;
 
 public class OverlayImageVBox extends VBox {
 
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
+    public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public FoldersChooserVBox foldersChooserVBox;
 //    public TextField topImagePathTextField;
@@ -107,11 +106,9 @@ public class OverlayImageVBox extends VBox {
         topImageCoordinateHBox.getChildren().addAll(topImagePositionTitle, topImagePositionCombo, topImageXCoordinateTitle, topImageXCoordinateTextField, topImageYCoordinateTitle, topImageYCoordinateTextField);
         topImageCoordinateHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
+        progressVBox = new ProgressVBox();
 
-        runButton.setOnAction(e -> {
+        progressVBox.runButton.setOnAction(e -> {
             try {
                 overlayImage(this);
             } catch (Exception exception) {
@@ -122,7 +119,7 @@ public class OverlayImageVBox extends VBox {
         this.setSpacing(default_spacing);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
-        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topImageSelector, topImageHeightAndOpacityHBox, topImageCoordinateHBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topImageSelector, topImageHeightAndOpacityHBox, topImageCoordinateHBox, progressVBox);
 
     }
 
@@ -265,8 +262,8 @@ public class OverlayImageVBox extends VBox {
 
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 

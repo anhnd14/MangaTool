@@ -23,6 +23,8 @@ import static com.example.mangatool.TextConfig.*;
 public class AppFunction {
 
 
+
+    //Check điều kiện
     public static boolean isPositiveInteger(String string) {
         try {
             Integer.parseInt(string);
@@ -45,6 +47,8 @@ public class AppFunction {
         }
     }
 
+
+    //load, lưu properties
     public static void loadProperties(Properties properties) throws Exception {
 
         try {
@@ -53,7 +57,6 @@ public class AppFunction {
             properties.store(new FileOutputStream(FILENAME), null);
         }
     }
-
     public static String loadData(String key) {
         try {
             Properties properties = new Properties();
@@ -64,7 +67,6 @@ public class AppFunction {
             return null;
         }
     }
-
     public static String loadData(String key, String replace) {
         try {
             Properties properties = new Properties();
@@ -79,7 +81,18 @@ public class AppFunction {
             return null;
         }
     }
+    public static void saveData(String key, String value) {
+        try {
+            Properties properties = new Properties();
+            loadProperties(properties);
+            properties.setProperty(key, value);
+            properties.store(new FileOutputStream(FILENAME), null);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 
+    //chọn file, folder
     public static void fileSelector(TextField textField) throws Exception {
 
         String lastOpenFile = "";
@@ -116,7 +129,6 @@ public class AppFunction {
         }
 
     }
-
     public static String fileSelector() throws Exception {
 
         String lastOpenFile = "";
@@ -151,7 +163,43 @@ public class AppFunction {
 
         return  selectedFile.getAbsolutePath();
     }
+    public static List<File> filesSelector(TextField textField) throws Exception {
+        String lastOpenPath = "";
+        Properties properties = new Properties();
 
+        try {
+            properties.load(new FileInputStream(FILENAME));
+        } catch (Exception exception) {
+            properties.store(new FileOutputStream(FILENAME), null);
+        }
+        if (properties.containsKey("lastOpenPath")) {
+            lastOpenPath = loadData("lastOpenPath");
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Files");
+
+        Path checkPath = Paths.get(lastOpenPath);
+        boolean pathExist = Files.isDirectory(checkPath) && Files.exists(checkPath);
+
+        if (!lastOpenPath.isEmpty() && pathExist) {
+            fileChooser.setInitialDirectory(new File(lastOpenPath));
+        }
+
+        List<File> fileList;
+
+        fileList = fileChooser.showOpenMultipleDialog(null);
+
+        List<String> fileListName = new ArrayList<>();
+
+        for (File file : fileList) {
+            fileListName.add(file.getName());
+        }
+
+        textField.setText(fileListName.toString());
+
+        return fileList;
+    }
     public static void selectFolder(TextField textField) throws IOException {
         String lastOpenPath = "";
         Properties properties = new Properties();
@@ -185,7 +233,6 @@ public class AppFunction {
         }
 
     }
-
     public static void openFolder(TextField textField) {
         String pathToOpen = textField.getText();
         if (pathToOpen.isEmpty()) {
@@ -200,7 +247,6 @@ public class AppFunction {
             exception.printStackTrace();
         }
     }
-
     public static void openFolder(String pathToOpen) throws IOException {
         if (pathToOpen.isEmpty()) {
             System.out.println("Folder not found");
@@ -213,16 +259,7 @@ public class AppFunction {
         }
     }
 
-    public static void saveData(String key, String value) {
-        try {
-            Properties properties = new Properties();
-            loadProperties(properties);
-            properties.setProperty(key, value);
-            properties.store(new FileOutputStream(FILENAME), null);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
+
 
     //Lọc các file ảnh
     public static List<File> filterFiles(File[] files) {
