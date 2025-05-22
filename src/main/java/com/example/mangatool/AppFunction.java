@@ -129,7 +129,7 @@ public class AppFunction {
         }
 
     }
-    public static String fileSelector() throws Exception {
+    public static void fileSelector(TextField textField, String extensionText, List<String> extensions) throws Exception {
 
         String lastOpenFile = "";
 
@@ -144,6 +144,46 @@ public class AppFunction {
         }
 
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(extensionText, extensions);
+        fileChooser.getExtensionFilters().add(extensionFilter);
+        fileChooser.setTitle("Select File");
+
+        assert lastOpenFile != null;
+        Path checkFilePath = Paths.get(lastOpenFile);
+        boolean fileExist = Files.isRegularFile(checkFilePath) && Files.exists(checkFilePath);
+
+        if (!lastOpenFile.isEmpty() && fileExist) {
+            fileChooser.setInitialDirectory(new File(new File(lastOpenFile).getParent()));
+        }
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            textField.setText(selectedFile.getAbsolutePath());
+            saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            System.out.print(selectedFile.getAbsolutePath());
+        } else {
+            textField.setText("");
+        }
+
+    }
+    public static String fileSelector(String extensionText, List<String> extensions) throws Exception {
+
+        String lastOpenFile = "";
+
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream(FILENAME));
+        } catch (Exception e) {
+            prop.store(new FileOutputStream(FILENAME), null);
+        }
+        if (prop.containsKey("lastOpenFile")) {
+            lastOpenFile = loadData("lastOpenFile");
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(extensionText, extensions);
+        fileChooser.getExtensionFilters().add(extensionFilter);
         fileChooser.setTitle("Select File");
 
         assert lastOpenFile != null;
@@ -162,6 +202,46 @@ public class AppFunction {
         }
 
         return  selectedFile.getAbsolutePath();
+    }
+    public static List<File> filesSelector(TextField textField, String extensionText, List<String> extensions) throws Exception {
+        String lastOpenPath = "";
+        Properties properties = new Properties();
+
+        try {
+            properties.load(new FileInputStream(FILENAME));
+        } catch (Exception exception) {
+            properties.store(new FileOutputStream(FILENAME), null);
+        }
+        if (properties.containsKey("lastOpenPath")) {
+            lastOpenPath = loadData("lastOpenPath");
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(extensionText, extensions);
+        fileChooser.getExtensionFilters().add(extensionFilter);
+
+        fileChooser.setTitle("Select Files");
+
+        Path checkPath = Paths.get(lastOpenPath);
+        boolean pathExist = Files.isDirectory(checkPath) && Files.exists(checkPath);
+
+        if (!lastOpenPath.isEmpty() && pathExist) {
+            fileChooser.setInitialDirectory(new File(lastOpenPath));
+        }
+
+        List<File> fileList;
+
+        fileList = fileChooser.showOpenMultipleDialog(null);
+
+        List<String> fileListName = new ArrayList<>();
+
+        for (File file : fileList) {
+            fileListName.add(file.getName());
+        }
+
+        textField.setText(fileListName.toString());
+
+        return fileList;
     }
     public static List<File> filesSelector(TextField textField) throws Exception {
         String lastOpenPath = "";
@@ -200,6 +280,7 @@ public class AppFunction {
 
         return fileList;
     }
+
     public static void selectFolder(TextField textField) throws IOException {
         String lastOpenPath = "";
         Properties properties = new Properties();

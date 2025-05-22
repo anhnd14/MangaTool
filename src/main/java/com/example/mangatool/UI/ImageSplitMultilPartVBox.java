@@ -1,9 +1,9 @@
 package com.example.mangatool.UI;
 
 
+import com.example.mangatool.MinorUI.FolderChooser;
 import com.example.mangatool.MinorUI.FormatChooserVBox;
 import com.example.mangatool.MinorUI.ProgressVBox;
-import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -31,7 +31,7 @@ public class ImageSplitMultilPartVBox extends VBox {
 
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
-    public TextFieldAndTwoButtonsHBox outputSelector;
+    public FolderChooser outputSelector;
     public Image image;
     public ImageView imageView;
     public Pane pane;
@@ -41,12 +41,10 @@ public class ImageSplitMultilPartVBox extends VBox {
     public ImageSplitMultilPartVBox() {
 
         progressVBox = new ProgressVBox();
-        progressVBox.runButton.setOnAction(_ -> {
-            splitImageMultiParts(this);
-        });
+        progressVBox.runButton.setOnAction(_ -> splitImageMultiParts(this));
 
         formatChooserVBox = new FormatChooserVBox();
-
+        outputSelector = new FolderChooser(output_path_text);
 
         lineList = new ArrayList<>();
 
@@ -59,10 +57,7 @@ public class ImageSplitMultilPartVBox extends VBox {
             lineList.clear();
         });
         resetLineButton = new Button(reset_line_button_text);
-        resetLineButton.setOnAction(_ -> {
-            resetLine();
-        });
-
+        resetLineButton.setOnAction(_ -> resetLine());
 
         imageView = new ImageView();
         imageView.setPreserveRatio(true);
@@ -70,14 +65,12 @@ public class ImageSplitMultilPartVBox extends VBox {
         pane = new Pane();
         pane.getChildren().add(imageView);
 
-
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setPadding(new Insets(default_padding));
         scrollPane.setContent(pane);
 
         Button openImageButton = setActionOpenImage();
-
         pane.setOnMouseClicked(e -> {
 
             Bounds imageBounds = imageView.getBoundsInParent();
@@ -89,23 +82,6 @@ public class ImageSplitMultilPartVBox extends VBox {
             pane.getChildren().add(line);
             lineList.add(y);
 
-        });
-
-
-        outputSelector = new TextFieldAndTwoButtonsHBox(output_path_text, select_folder_button_text, open_folder_button_text);
-        outputSelector.firstButton.setOnAction(_ -> {
-            try {
-                selectFolder(outputSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-        outputSelector.secondButton.setOnAction(_ -> {
-            try {
-                openFolder(outputSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
         });
 
 
@@ -135,7 +111,7 @@ public class ImageSplitMultilPartVBox extends VBox {
         openImageButton.setOnAction(_ -> {
 
             try {
-                image = new Image(fileSelector());
+                image = new Image(fileSelector("Image File", image_extensions));
 
                 pane.setMaxWidth(default_width);
                 pane.setMinHeight(image.getHeight() * ratio);
@@ -159,7 +135,7 @@ public class ImageSplitMultilPartVBox extends VBox {
         String outputPath = imageSplitMultilPartVBox.outputSelector.textField.getText();
         String expectedType = imageSplitMultilPartVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = imageSplitMultilPartVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = imageSplitMultilPartVBox.formatChooserVBox.startIndexTextField.getText();
+        String expectedStartIndex = imageSplitMultilPartVBox.formatChooserVBox.startIndex.textField.getText();
 
         Task<Void> task = new Task<>() {
 

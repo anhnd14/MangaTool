@@ -5,8 +5,9 @@ import static com.example.mangatool.AppFunction.*;
 
 import static com.example.mangatool.TextConfig.*;
 
+import com.example.mangatool.MinorUI.FileChooser;
 import com.example.mangatool.MinorUI.ProgressVBox;
-import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
+import com.example.mangatool.MinorUI.SmallTextFieldHBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -14,8 +15,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -31,9 +30,9 @@ public class JoinTwoImagesVBox extends VBox {
 
     public ProgressVBox progressVBox;
     public ComboBox<String> fileFormatCombo;
-    public TextFieldAndTwoButtonsHBox firstImageSelector;
-    public TextFieldAndTwoButtonsHBox secondImageSelector;
-    public TextField outFileNameTextField;
+    public FileChooser firstImageSelector;
+    public FileChooser secondImageSelector;
+    public SmallTextFieldHBox outFileName;
     public ComboBox<String> joinDirection;
 
 
@@ -53,41 +52,9 @@ public class JoinTwoImagesVBox extends VBox {
         hBoxChooseFormat.getChildren().addAll(formatTitle, this.fileFormatCombo);
 
 
-        firstImageSelector = new TextFieldAndTwoButtonsHBox(choose_image_text, select_file_button_text, open_file_button_text);
-        firstImageSelector.firstButton.setOnAction(_ -> {
-            try {
-                fileSelector(firstImageSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-        firstImageSelector.secondButton.setOnAction(_ -> {
-            try {
-                openFolder(firstImageSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        secondImageSelector = new TextFieldAndTwoButtonsHBox(choose_image_text, select_file_button_text, open_file_button_text);
-        secondImageSelector.firstButton.setOnAction(e -> {
-            try {
-                fileSelector(secondImageSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-        secondImageSelector.secondButton.setOnAction(_ -> {
-            try {
-                openFolder(secondImageSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        Text outFileNameTitle = new Text(out_file_name_text);
-        outFileNameTextField = new TextField();
-        outFileNameTextField.setPrefWidth(small_text_field_pref_width);
+        firstImageSelector = new FileChooser(choose_image_text, images_file_extension_text, image_extensions);
+        secondImageSelector = new FileChooser(choose_image_text, images_file_extension_text, image_extensions);
+        outFileName = new SmallTextFieldHBox(out_file_name_text);
 
         Text joinDirectionTitle = new Text(join_direction_text);
         ObservableList<String> directions = FXCollections.observableArrayList("Horizontal", "Vertical");
@@ -98,7 +65,7 @@ public class JoinTwoImagesVBox extends VBox {
         outFileNameAndDirectionHBox.setSpacing(default_spacing);
         outFileNameAndDirectionHBox.setPadding(new Insets(default_padding));
         outFileNameAndDirectionHBox.setAlignment(Pos.BASELINE_CENTER);
-        outFileNameAndDirectionHBox.getChildren().addAll(outFileNameTitle, outFileNameTextField, joinDirectionTitle, joinDirection);
+        outFileNameAndDirectionHBox.getChildren().addAll(outFileName, joinDirectionTitle, joinDirection);
 
 
         Button openFolderButton = openFolderButton();
@@ -124,7 +91,7 @@ public class JoinTwoImagesVBox extends VBox {
 
     private Button openFolderButton() {
         Button openFolderButton = new Button(open_folder_button_text);
-        openFolderButton.setOnAction(e -> {
+        openFolderButton.setOnAction(_ -> {
             try {
                 File file = new File(firstImageSelector.textField.getText());
                 String outputPath = firstImageSelector.textField.getText().substring(0, firstImageSelector.textField.getText().length() - file.getName().length() - 1);
@@ -179,7 +146,6 @@ public class JoinTwoImagesVBox extends VBox {
                     throw new Exception(e);
                 }
 
-
                 updateProgress(100, 100);
                 updateMessage("Processing complete.");
                 System.out.println("Processing complete.");
@@ -192,14 +158,13 @@ public class JoinTwoImagesVBox extends VBox {
 
                 int fileNameLength = fileName.length();
                 String outputPath = firstImagePath.substring(0, firstImagePath.length() - fileNameLength - 1);
-                String outFileName;
-                if (outFileNameTextField.getText().isEmpty()) {
-                    outFileName = fileName.substring(0, lastDotIndex) + "-joined";
+                String name;
+                if (outFileName.textField.getText().isEmpty()) {
+                    name = fileName.substring(0, lastDotIndex) + "-joined";
                 } else {
-                    outFileName = outFileNameTextField.getText();
+                    name = outFileName.textField.getText();
                 }
-
-                return outputPath + File.separator + outFileName + "." + extension;
+                return outputPath + File.separator + name + "." + extension;
             }
 
             private BufferedImage joinHorizontal (File firstImageFile, File secondImageFile) throws Exception {

@@ -3,19 +3,13 @@ package com.example.mangatool.UI;
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
-import com.example.mangatool.MinorUI.FoldersChooserVBox;
-import com.example.mangatool.MinorUI.FormatChooserVBox;
-import com.example.mangatool.MinorUI.ProgressVBox;
-import com.example.mangatool.MinorUI.TextFieldAndTwoButtonsHBox;
+import com.example.mangatool.MinorUI.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -31,84 +25,58 @@ public class OverlayImageVBox extends VBox {
 
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
-    public FoldersChooserVBox foldersChooserVBox;
-//    public TextField topImagePathTextField;
-    public TextFieldAndTwoButtonsHBox topImageSelector;
-
-    public TextField topImageHeightTextField;
-    public TextField topImageOpacityTextField;
-    public TextField topImageXCoordinateTextField;
-    public TextField topImageYCoordinateTextField;
+    public ImagesListChooser inputSelector;
+    public FolderChooser outputSelector;
+    public FileChooser topImageSelector;
+    public SmallTextFieldHBox topImageHeight;
+    public SmallTextFieldHBox topImageOpacity;
+    public SmallTextFieldHBox topImageXCoordinate;
+    public SmallTextFieldHBox topImageYCoordinate;
     public ComboBox<String> topImagePositionCombo;
 
 
     public OverlayImageVBox() {
 
         formatChooserVBox = new FormatChooserVBox();
-        foldersChooserVBox = new FoldersChooserVBox();
+        inputSelector = new ImagesListChooser(input_file_list_text);
+        outputSelector = new FolderChooser(output_path_text);
+        topImageSelector = new FileChooser(top_image_text, images_file_extension_text, image_extensions);
 
-        ObservableList<String> position = FXCollections.observableArrayList("Top Left", "Top Right", "Bottom Left", "Bottom Right");
+        String topImageHeightData = loadData("defaultImageHeight", "100");
+        String topImageOpacityData = loadData("defaultImageOpacity", "0.1");
+        String topImageXData = loadData("defaultImageX", "10");
+        String topImageYData = loadData("defaultImageY", "10");
 
-
-        topImageSelector = new TextFieldAndTwoButtonsHBox(top_image_text, select_file_button_text, open_file_button_text);
-        topImageSelector.firstButton.setOnAction(e -> {
-            try {
-                fileSelector(topImageSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-        topImageSelector.secondButton.setOnAction(_ -> {
-            try {
-                openFolder(topImageSelector.textField);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        String topImageHeight = loadData("defaultImageHeight", "100");
-        String topImageOpacity = loadData("defaultImageOpacity", "0.1");
-        String topImageX = loadData("defaultImageX", "10");
-        String topImageY = loadData("defaultImageY", "10");
-
-        Text topImageHeightTitle = new Text(top_image_height_text);
-        Text topImageOpacityTitle = new Text(top_image_opacity_text);
-        topImageHeightTextField = new TextField(topImageHeight);
-        topImageHeightTextField.setPrefWidth(small_text_field_pref_width);
-        topImageHeightTextField.setTooltip(new Tooltip(positive_number_tooltip));
-        topImageOpacityTextField = new TextField(topImageOpacity);
-        topImageOpacityTextField.setPrefWidth(small_text_field_pref_width);
-        topImageOpacityTextField.setTooltip(new Tooltip(valid_double_tooltip));
+        topImageHeight = new SmallTextFieldHBox(top_image_height_text, topImageHeightData);
+        topImageHeight.textField.setTooltip(new Tooltip(positive_number_tooltip));
+        topImageOpacity = new SmallTextFieldHBox(top_image_opacity_text, topImageOpacityData);
+        topImageOpacity.textField.setTooltip(new Tooltip(valid_double_tooltip));
 
         Text topImagePositionTitle = new Text(top_image_position_text);
+        ObservableList<String> position = FXCollections.observableArrayList("Top Left", "Top Right", "Bottom Left", "Bottom Right");
         topImagePositionCombo = new ComboBox<>(position);
         topImagePositionCombo.getSelectionModel().select(3);
 
-        Text topImageXCoordinateTitle = new Text(top_image_x_coordinate_text);
-        Text topImageYCoordinateTitle = new Text(top_image_y_coordinate_text);
-        topImageXCoordinateTextField = new TextField(topImageX);
-        topImageXCoordinateTextField.setPrefWidth(small_text_field_pref_width);
-        topImageXCoordinateTextField.setTooltip(new Tooltip(positive_number_tooltip));
-        topImageYCoordinateTextField = new TextField(topImageY);
-        topImageYCoordinateTextField.setPrefWidth(small_text_field_pref_width);
-        topImageYCoordinateTextField.setTooltip(new Tooltip(positive_number_tooltip));
-
+        topImageXCoordinate = new SmallTextFieldHBox(top_image_x_coordinate_text, topImageXData);
+        topImageXCoordinate.textField.setTooltip(new Tooltip(positive_number_tooltip));
+        topImageYCoordinate = new SmallTextFieldHBox(top_image_y_coordinate_text, topImageYData);
+        topImageYCoordinate.textField.setTooltip(new Tooltip(positive_number_tooltip));
 
         HBox topImageHeightAndOpacityHBox = new HBox(default_spacing);
         topImageHeightAndOpacityHBox.setSpacing(default_spacing);
         topImageHeightAndOpacityHBox.setPadding(new Insets(default_padding));
-        topImageHeightAndOpacityHBox.getChildren().addAll(topImageHeightTitle, topImageHeightTextField, topImageOpacityTitle, topImageOpacityTextField);
+        topImageHeightAndOpacityHBox.getChildren().addAll(topImageHeight, topImageOpacity);
         topImageHeightAndOpacityHBox.setAlignment(Pos.BASELINE_CENTER);
 
         HBox topImageCoordinateHBox = new HBox(default_spacing);
         topImageCoordinateHBox.setSpacing(default_spacing);
         topImageCoordinateHBox.setPadding(new Insets(default_padding));
-        topImageCoordinateHBox.getChildren().addAll(topImagePositionTitle, topImagePositionCombo, topImageXCoordinateTitle, topImageXCoordinateTextField, topImageYCoordinateTitle, topImageYCoordinateTextField);
+        topImageCoordinateHBox.getChildren().addAll(topImagePositionTitle, topImagePositionCombo, topImageXCoordinate, topImageYCoordinate);
         topImageCoordinateHBox.setAlignment(Pos.BASELINE_CENTER);
 
-        progressVBox = new ProgressVBox();
 
-        progressVBox.runButton.setOnAction(e -> {
+        progressVBox = new ProgressVBox();
+        progressVBox.runButton.setOnAction(_ -> {
             try {
                 overlayImage(this);
             } catch (Exception exception) {
@@ -119,22 +87,21 @@ public class OverlayImageVBox extends VBox {
         this.setSpacing(default_spacing);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
-        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, topImageSelector, topImageHeightAndOpacityHBox, topImageCoordinateHBox, progressVBox);
-
+        this.getChildren().addAll(formatChooserVBox, inputSelector, outputSelector, topImageSelector, topImageHeightAndOpacityHBox, topImageCoordinateHBox, progressVBox);
     }
 
     public void overlayImage(OverlayImageVBox overlayImageVBox) {
 
         String imgPath = overlayImageVBox.topImageSelector.textField.getText();
-        String inputPath = overlayImageVBox.foldersChooserVBox.inputSelector.textField.getText();
-        String outputPath = overlayImageVBox.foldersChooserVBox.outputSelector.textField.getText();
+        String outputPath = overlayImageVBox.outputSelector.textField.getText();
         String expectedType = overlayImageVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = overlayImageVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = overlayImageVBox.formatChooserVBox.startIndexTextField.getText();
-        String topImageHeight = overlayImageVBox.topImageHeightTextField.getText();
-        String topImageOpacity = overlayImageVBox.topImageOpacityTextField.getText();
-        String topImageX = overlayImageVBox.topImageXCoordinateTextField.getText();
-        String topImageY = overlayImageVBox.topImageYCoordinateTextField.getText();
+        String expectedStartIndex = overlayImageVBox.formatChooserVBox.startIndex.textField.getText();
+        String topImageHeight = overlayImageVBox.topImageHeight.textField.getText();
+        String topImageOpacity = overlayImageVBox.topImageOpacity.textField.getText();
+        String topImageX = overlayImageVBox.topImageXCoordinate.textField.getText();
+        String topImageY = overlayImageVBox.topImageYCoordinate.textField.getText();
+        List<File> files = overlayImageVBox.inputSelector.fileList;
 
         Task<Void> task = new Task<>() {
             @Override
@@ -145,7 +112,7 @@ public class OverlayImageVBox extends VBox {
                 int thisTopImageX = 0;
                 int thisTopImageY = 0;
 
-                if (inputPath.isEmpty() || outputPath.isEmpty() || imgPath.isEmpty()) {
+                if (outputPath.isEmpty() || imgPath.isEmpty()) {
                     updateMessage("Please choose input path, output path and top image");
                     return null;
                 }
@@ -178,8 +145,6 @@ public class OverlayImageVBox extends VBox {
                     updateMessage("Please choose a jpg or png image file");
                     return null;
                 }
-
-                File[] files = new File(inputPath).listFiles();
 
                 if (files == null) {
                     updateMessage("Found no file in the input folder");

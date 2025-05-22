@@ -3,14 +3,10 @@ package com.example.mangatool.UI;
 import static com.example.mangatool.AppFunction.*;
 import static com.example.mangatool.TextConfig.*;
 
-import com.example.mangatool.MinorUI.FoldersChooserVBox;
-import com.example.mangatool.MinorUI.FormatChooserVBox;
+import com.example.mangatool.MinorUI.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 
 import javax.imageio.ImageIO;
@@ -19,71 +15,57 @@ import java.io.File;
 import java.util.List;
 
 
-
 public class RenameVBox extends VBox {
 
-    public ProgressBar progressBar;
-    public Label progressLabel;
-    public Button runButton;
+    public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
-    public FoldersChooserVBox foldersChooserVBox;
-
+    public ImagesListChooser inputSelector;
+    public FolderChooser outputSelector;
 
     public RenameVBox() {
+
         formatChooserVBox = new FormatChooserVBox();
-        foldersChooserVBox = new FoldersChooserVBox();
+        progressVBox = new ProgressVBox();
+        inputSelector = new ImagesListChooser(input_file_list_text);
+        outputSelector = new FolderChooser(output_path_text);
+        progressVBox.runButton.setOnAction(_ -> renameFileList(this));
 
-        this.runButton = new Button("Run");
-        this.progressBar = new ProgressBar(0);
-        this.progressLabel = new Label("");
-
-        runButton.setOnAction(_ -> {
-            try {
-                renameImage(this);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, runButton, progressBar, progressLabel);
+        this.getChildren().addAll(formatChooserVBox, inputSelector, outputSelector, progressVBox);
         this.setSpacing(default_spacing);
-        this.setPrefSize(800,600);
+        this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
         this.setAlignment(Pos.TOP_CENTER);
     }
 
+    public void renameFileList(RenameVBox renameVBox) {
 
-    public void renameImage(RenameVBox renameVBox) {
-
-        String inputPath = renameVBox.foldersChooserVBox.inputSelector.textField.getText();
-        String outputPath = renameVBox.foldersChooserVBox.outputSelector.textField.getText();
+        String outputPath = renameVBox.outputSelector.textField.getText();
         String expectedType = renameVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = renameVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = renameVBox.formatChooserVBox.startIndexTextField.getText();
+        String expectedStartIndex = renameVBox.formatChooserVBox.startIndex.textField.getText();
+        List<File> files = renameVBox.inputSelector.fileList;
 
         Task<Void> task = new Task<>() {
 
             @Override
             protected Void call() {
 
-
-                if (inputPath.isEmpty() || outputPath.isEmpty()) {
-                    updateMessage("Please choose input path and output path");
-                    System.out.print("Please choose input path and output path");
-                    return null;
-                }
                 if (!isPositiveInteger(expectedStartIndex)) {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
-                File[] files = new File(inputPath).listFiles();
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
-                assert files != null;
+
+                if (files.isEmpty()) {
+                    updateMessage("No files had been chosen");
+                    return null;
+                }
+
                 List<File> fileList = filterFiles(files);
 
                 if (fileList.isEmpty()) {
-                    updateMessage("Found no image file in the input folder");
+                    updateMessage("Found no image file");
                     return null;
                 }
 
@@ -94,10 +76,9 @@ public class RenameVBox extends VBox {
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         String imagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
-                        saveImage(originalImage, imagePath, expectedType);
-                        System.out.println("Image save successfully: " + file.getName());
-                        System.out.println("Image save as: " + String.format("%0" + expectedName + "d", counter) + "." + expectedType);
                         counter += 1;
+                        saveImage(originalImage, imagePath, expectedType);
+                        System.out.println("Image renamed successfully: " + file.getName());
                     } catch (Exception exception) {
                         System.err.println("Error processing image: " + file.getName());
                         exception.printStackTrace();
@@ -111,10 +92,11 @@ public class RenameVBox extends VBox {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-        progressLabel.textProperty().bind(task.messageProperty());
+        progressVBox.progressBar.progressProperty().bind(task.progressProperty());
+        progressVBox.progressLabel.textProperty().bind(task.messageProperty());
 
         new Thread(task).start();
 
     }
+
 }

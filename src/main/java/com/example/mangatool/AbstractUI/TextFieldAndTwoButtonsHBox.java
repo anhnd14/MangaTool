@@ -1,4 +1,4 @@
-package com.example.mangatool.MinorUI;
+package com.example.mangatool.AbstractUI;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,7 +9,7 @@ import javafx.scene.text.Text;
 
 import static com.example.mangatool.TextConfig.*;
 
-public class TextFieldAndTwoButtonsHBox extends HBox {
+public abstract class TextFieldAndTwoButtonsHBox extends HBox {
     public TextField textField;
     public Button firstButton;
     public Button secondButton;
@@ -28,5 +28,6 @@ public class TextFieldAndTwoButtonsHBox extends HBox {
         this.setAlignment(Pos.BASELINE_CENTER);
         this.setPadding(new Insets(default_padding));
         this.getChildren().addAll(titleText, this.textField, firstButton, secondButton);
+
     }
 }

@@ -1,6 +1,9 @@
 package com.example.mangatool;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 public class TextConfig {
 
     public static final String FILENAME = "app.properties";
@@ -21,6 +24,7 @@ public class TextConfig {
     public static String left_crop = "Left:";
     public static String right_crop = "Right:";
     public static String choose_image_text = "Choose Image:";
+    public static String choose_file_text = "Choose File:";
     public static String out_file_name_text = "Out File Name:";
     public static String join_direction_text = "Join Direction:";
     public static int small_text_field_pref_width = 50;
@@ -38,5 +42,8 @@ public class TextConfig {
     public static int default_padding = 10;
     public static int default_width = 500;
 
-
+    public static String images_file_extension_text = "Image Files";
+    public static String pdf_file_extension_text = "PDF File";
+    public static List<String> image_extensions = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bpm", "*.webp", "*.tiff");
+    public static List<String> pdf_extensions = List.of("*.pdf");
 }

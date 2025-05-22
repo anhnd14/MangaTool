@@ -2,15 +2,10 @@ package com.example.mangatool.UI;
 
 import static com.example.mangatool.TextConfig.*;
 
-import com.example.mangatool.MinorUI.FoldersChooserVBox;
-import com.example.mangatool.MinorUI.FormatChooserVBox;
-import com.example.mangatool.MinorUI.ProgressVBox;
+import com.example.mangatool.MinorUI.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 
 import static com.example.mangatool.AppFunction.*;
@@ -28,7 +23,8 @@ public class ImageSplitVBox extends VBox {
 
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
-    public FoldersChooserVBox foldersChooserVBox;
+    public ImagesListChooser inputSelector;
+    public FolderChooser outputSelector;
 
 
 
@@ -36,7 +32,8 @@ public class ImageSplitVBox extends VBox {
     public ImageSplitVBox() {
 
         formatChooserVBox = new FormatChooserVBox();
-        foldersChooserVBox = new FoldersChooserVBox();
+        inputSelector = new ImagesListChooser(input_file_list_text);
+        outputSelector = new FolderChooser(output_path_text);
         progressVBox = new ProgressVBox();
 
         progressVBox.runButton.setOnAction(_ -> {
@@ -47,7 +44,7 @@ public class ImageSplitVBox extends VBox {
             }
         });
 
-        this.getChildren().addAll(formatChooserVBox, foldersChooserVBox, progressVBox);
+        this.getChildren().addAll(formatChooserVBox, inputSelector, outputSelector, progressVBox);
         this.setSpacing(default_spacing);
         this.setPrefSize(800, 600);
         this.setPadding(new Insets(default_padding));
@@ -56,11 +53,12 @@ public class ImageSplitVBox extends VBox {
 
 
     public void splitImage(ImageSplitVBox imageSplitVBox) {
-        String inputPath = imageSplitVBox.foldersChooserVBox.inputSelector.textField.getText();
-        String outputPath = imageSplitVBox.foldersChooserVBox.outputSelector.textField.getText();
+        String outputPath = imageSplitVBox.outputSelector.textField.getText();
         String expectedType = imageSplitVBox.formatChooserVBox.fileFormatCombo.getValue();
         String expectedName = imageSplitVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = imageSplitVBox.formatChooserVBox.startIndexTextField.getText();
+        String expectedStartIndex = imageSplitVBox.formatChooserVBox.startIndex.textField.getText();
+        List<File> files = imageSplitVBox.inputSelector.fileList;
+
 
         Task<Void> task = new Task<>() {
 
@@ -68,11 +66,11 @@ public class ImageSplitVBox extends VBox {
             protected Void call() {
 
 
-                if (inputPath.isEmpty() || outputPath.isEmpty()) {
+                if (outputPath.isEmpty()) {
                     updateMessage("Please choose input path and output path");
                     return null;
                 }
-                if (!Files.isDirectory(Paths.get(inputPath)) || !Files.isDirectory(Paths.get(outputPath))) {
+                if (!Files.isDirectory(Paths.get(outputPath))) {
                     updateMessage("Please choose valid input path and output path");
                     return null;
                 }
@@ -80,7 +78,6 @@ public class ImageSplitVBox extends VBox {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
-                File[] files = new File(inputPath).listFiles();
 
                 if (files == null) {
                     updateMessage("Found no image file in the input folder");

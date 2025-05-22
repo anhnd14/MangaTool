@@ -4,7 +4,7 @@ Image Split:
 -Cắt ảnh làm 2 phần trái và phải
 -Thêm "-full" vào tên ảnh nếu không muốn cắt
 
-Rename:
+Rename Images:
 -Đổi tên ảnh 
 
 Crop:
@@ -16,3 +16,9 @@ Grayscale:
 
 AddLogo:
 -Thêm logo hàng loạt theo thông số cho trước
+
+Join Images:
+-Ghép liền 2 ảnh, theo chiều ngang hoặc dọc
+
+Split Images:
+-Chia ảnh ngang tùy theo mình chọn

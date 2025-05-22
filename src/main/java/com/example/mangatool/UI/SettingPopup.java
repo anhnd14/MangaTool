@@ -46,8 +46,8 @@ public class SettingPopup extends Stage {
     Properties properties = new Properties();
 
 
-
     public SettingPopup() throws Exception {
+
         this.initModality(Modality.APPLICATION_MODAL);
 
         Text defaultSettingTitle = new Text("Setting default values");

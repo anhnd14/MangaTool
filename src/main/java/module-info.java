@@ -10,6 +10,7 @@ module com.example.mangatool {
     requires eu.hansolo.tilesfx;
     requires org.json;
     requires java.desktop;
+    requires org.apache.pdfbox;
 
     opens com.example.mangatool to javafx.fxml;
     exports com.example.mangatool;
