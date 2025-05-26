@@ -1,12 +1,10 @@
-package com.example.mangatool.MinorUI;
+package com.example.mangatool.ui.component;
 
-import com.example.mangatool.AbstractUI.TextFieldAndTwoButtonsHBox;
+import static com.example.mangatool.common.CommonFunction.openFolder;
+import static com.example.mangatool.common.CommonFunction.selectFolder;
+import static com.example.mangatool.common.TextConfig.*;
 
-import static com.example.mangatool.AppFunction.openFolder;
-import static com.example.mangatool.AppFunction.selectFolder;
-import static com.example.mangatool.TextConfig.*;
-
-public class FolderChooser extends TextFieldAndTwoButtonsHBox {
+public class FolderChooser extends InputActionRow {
 
     public FolderChooser(String title) {
         super(title, select_folder_button_text, open_folder_button_text);

@@ -1,4 +1,4 @@
-package com.example.mangatool;
+package com.example.mangatool.common;
 
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -18,9 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.AppProperties.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-public class AppFunction {
+public class CommonFunction {
 
 
 
@@ -103,8 +104,8 @@ public class AppFunction {
         } catch (Exception e) {
             prop.store(new FileOutputStream(FILENAME), null);
         }
-        if (prop.containsKey("lastOpenFile")) {
-            lastOpenFile = loadData("lastOpenFile");
+        if (prop.containsKey(LAST_OPENED_FILE_KEY)) {
+            lastOpenFile = loadData(LAST_OPENED_FILE_KEY);
         }
 
         FileChooser fileChooser = new FileChooser();
@@ -122,7 +123,7 @@ public class AppFunction {
 
         if (selectedFile != null) {
             textField.setText(selectedFile.getAbsolutePath());
-            saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            saveData(LAST_OPENED_FILE_KEY, selectedFile.getAbsolutePath());
             System.out.print(selectedFile.getAbsolutePath());
         } else {
             textField.setText("");
@@ -139,8 +140,8 @@ public class AppFunction {
         } catch (Exception e) {
             prop.store(new FileOutputStream(FILENAME), null);
         }
-        if (prop.containsKey("lastOpenFile")) {
-            lastOpenFile = loadData("lastOpenFile");
+        if (prop.containsKey(LAST_OPENED_FILE_KEY)) {
+            lastOpenFile = loadData(LAST_OPENED_FILE_KEY);
         }
 
         FileChooser fileChooser = new FileChooser();
@@ -160,7 +161,7 @@ public class AppFunction {
 
         if (selectedFile != null) {
             textField.setText(selectedFile.getAbsolutePath());
-            saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            saveData(LAST_OPENED_FILE_KEY, selectedFile.getAbsolutePath());
             System.out.print(selectedFile.getAbsolutePath());
         } else {
             textField.setText("");
@@ -177,8 +178,8 @@ public class AppFunction {
         } catch (Exception e) {
             prop.store(new FileOutputStream(FILENAME), null);
         }
-        if (prop.containsKey("lastOpenFile")) {
-            lastOpenFile = loadData("lastOpenFile");
+        if (prop.containsKey(LAST_OPENED_FILE_KEY)) {
+            lastOpenFile = loadData(LAST_OPENED_FILE_KEY);
         }
 
         FileChooser fileChooser = new FileChooser();
@@ -197,7 +198,7 @@ public class AppFunction {
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            saveData("lastOpenFile", selectedFile.getAbsolutePath());
+            saveData(LAST_OPENED_FILE_KEY, selectedFile.getAbsolutePath());
             System.out.println(selectedFile.getAbsolutePath());
         }
 
@@ -212,8 +213,8 @@ public class AppFunction {
         } catch (Exception exception) {
             properties.store(new FileOutputStream(FILENAME), null);
         }
-        if (properties.containsKey("lastOpenPath")) {
-            lastOpenPath = loadData("lastOpenPath");
+        if (properties.containsKey(LAST_OPENED_PATH_KEY)) {
+            lastOpenPath = loadData(LAST_OPENED_PATH_KEY);
         }
 
         FileChooser fileChooser = new FileChooser();
@@ -252,8 +253,8 @@ public class AppFunction {
         } catch (Exception exception) {
             properties.store(new FileOutputStream(FILENAME), null);
         }
-        if (properties.containsKey("lastOpenPath")) {
-            lastOpenPath = loadData("lastOpenPath");
+        if (properties.containsKey(LAST_OPENED_PATH_KEY)) {
+            lastOpenPath = loadData(LAST_OPENED_PATH_KEY);
         }
 
         FileChooser fileChooser = new FileChooser();
@@ -290,8 +291,8 @@ public class AppFunction {
         } catch (Exception exception) {
             properties.store(new FileOutputStream(FILENAME), null);
         }
-        if (properties.containsKey("lastOpenPath")) {
-            lastOpenPath = loadData("lastOpenPath");
+        if (properties.containsKey(LAST_OPENED_PATH_KEY)) {
+            lastOpenPath = loadData(LAST_OPENED_PATH_KEY);
         }
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -308,7 +309,7 @@ public class AppFunction {
 
         if (selectedDirectory != null) {
             textField.setText(selectedDirectory.getAbsolutePath());
-            saveData("lastOpenPath", selectedDirectory.getAbsolutePath());
+            saveData(LAST_OPENED_PATH_KEY, selectedDirectory.getAbsolutePath());
         } else {
             textField.setText("");
         }
@@ -343,47 +344,47 @@ public class AppFunction {
 
 
     //Lọc các file ảnh
-    public static List<File> filterFiles(File[] files) {
-        List<File> fileList = new ArrayList<>();
+//    public static List<File> filterFiles(File[] files) {
+//        List<File> fileList = new ArrayList<>();
+//
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                String fileName = file.getName();
+//                int lastDotIndex = fileName.lastIndexOf('.');
+//                String extension = "";
+//                if (lastDotIndex > 0) {
+//                    extension = fileName.substring(lastDotIndex + 1);
+//                    extension = extension.toLowerCase(); // normalize to lower case
+//                }
+//                if (extension.equals("jpg") || extension.equals("png") || extension.equals("bmp") || extension.equals("tiff") || extension.equals("webp")) {
+//                    fileList.add(file);
+//                }
+//            }
+//        }
+//
+//        return fileList;
+//    }
 
-        for (File file : files) {
-            if (file.isFile()) {
-                String fileName = file.getName();
-                int lastDotIndex = fileName.lastIndexOf('.');
-                String extension = "";
-                if (lastDotIndex > 0) {
-                    extension = fileName.substring(lastDotIndex + 1);
-                    extension = extension.toLowerCase(); // normalize to lower case
-                }
-                if (extension.equals("jpg") || extension.equals("png") || extension.equals("bmp") || extension.equals("tiff") || extension.equals("webp")) {
-                    fileList.add(file);
-                }
-            }
-        }
-
-        return fileList;
-    }
-
-    public static List<File> filterFiles(List<File> files) {
-        List<File> fileList = new ArrayList<>();
-
-        for (File file : files) {
-            if (file.isFile()) {
-                String fileName = file.getName();
-                int lastDotIndex = fileName.lastIndexOf('.');
-                String extension = "";
-                if (lastDotIndex > 0) {
-                    extension = fileName.substring(lastDotIndex + 1);
-                    extension = extension.toLowerCase(); // normalize to lower case
-                }
-                if (extension.equals("jpg") || extension.equals("png") || extension.equals("bmp") || extension.equals("tiff") || extension.equals("webp")) {
-                    fileList.add(file);
-                }
-            }
-        }
-
-        return fileList;
-    }
+//    public static List<File> filterFiles(List<File> files) {
+//        List<File> fileList = new ArrayList<>();
+//
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                String fileName = file.getName();
+//                int lastDotIndex = fileName.lastIndexOf('.');
+//                String extension = "";
+//                if (lastDotIndex > 0) {
+//                    extension = fileName.substring(lastDotIndex + 1);
+//                    extension = extension.toLowerCase(); // normalize to lower case
+//                }
+//                if (extension.equals("jpg") || extension.equals("png") || extension.equals("bmp") || extension.equals("tiff") || extension.equals("webp")) {
+//                    fileList.add(file);
+//                }
+//            }
+//        }
+//
+//        return fileList;
+//    }
 
     //Lưu ảnh vào outputPath
     public static void saveImage(BufferedImage image, String outputPath, String formatName) {

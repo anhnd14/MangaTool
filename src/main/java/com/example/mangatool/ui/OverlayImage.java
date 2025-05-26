@@ -1,11 +1,10 @@
-package com.example.mangatool.UI;
+package com.example.mangatool.ui;
 
-import static com.example.mangatool.AppFunction.*;
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
+import static com.example.mangatool.common.AppProperties.*;
 
-import com.example.mangatool.MinorUI.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.example.mangatool.ui.component.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,45 +20,44 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class OverlayImageVBox extends VBox {
+public class OverlayImage extends VBox {
 
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public ImagesListChooser inputSelector;
     public FolderChooser outputSelector;
     public FileChooser topImageSelector;
-    public SmallTextFieldHBox topImageHeight;
-    public SmallTextFieldHBox topImageOpacity;
-    public SmallTextFieldHBox topImageXCoordinate;
-    public SmallTextFieldHBox topImageYCoordinate;
+    public SmallInputRow topImageHeight;
+    public SmallInputRow topImageOpacity;
+    public SmallInputRow topImageXCoordinate;
+    public SmallInputRow topImageYCoordinate;
     public ComboBox<String> topImagePositionCombo;
 
 
-    public OverlayImageVBox() {
+    public OverlayImage() {
 
         formatChooserVBox = new FormatChooserVBox();
         inputSelector = new ImagesListChooser(input_file_list_text);
         outputSelector = new FolderChooser(output_path_text);
         topImageSelector = new FileChooser(top_image_text, images_file_extension_text, image_extensions);
 
-        String topImageHeightData = loadData("defaultImageHeight", "100");
-        String topImageOpacityData = loadData("defaultImageOpacity", "0.1");
-        String topImageXData = loadData("defaultImageX", "10");
-        String topImageYData = loadData("defaultImageY", "10");
+        String topImageHeightData = loadData(DEFAULT_OVERLAY_IMAGE_HEIGHT, "100");
+        String topImageOpacityData = loadData(DEFAULT_OVERLAY_IMAGE_OPACITY, "0.1");
+        String topImageXData = loadData(DEFAULT_OVERLAY_IMAGE_X, "10");
+        String topImageYData = loadData(DEFAULT_OVERLAY_IMAGE_Y, "10");
 
-        topImageHeight = new SmallTextFieldHBox(top_image_height_text, topImageHeightData);
+        topImageHeight = new SmallInputRow(top_image_height_text, topImageHeightData);
         topImageHeight.textField.setTooltip(new Tooltip(positive_number_tooltip));
-        topImageOpacity = new SmallTextFieldHBox(top_image_opacity_text, topImageOpacityData);
+        topImageOpacity = new SmallInputRow(top_image_opacity_text, topImageOpacityData);
         topImageOpacity.textField.setTooltip(new Tooltip(valid_double_tooltip));
 
         Text topImagePositionTitle = new Text(top_image_position_text);
-        ObservableList<String> position = FXCollections.observableArrayList("Top Left", "Top Right", "Bottom Left", "Bottom Right");
         topImagePositionCombo = new ComboBox<>(position);
         topImagePositionCombo.getSelectionModel().select(3);
 
-        topImageXCoordinate = new SmallTextFieldHBox(top_image_x_coordinate_text, topImageXData);
+        topImageXCoordinate = new SmallInputRow(top_image_x_coordinate_text, topImageXData);
         topImageXCoordinate.textField.setTooltip(new Tooltip(positive_number_tooltip));
-        topImageYCoordinate = new SmallTextFieldHBox(top_image_y_coordinate_text, topImageYData);
+        topImageYCoordinate = new SmallInputRow(top_image_y_coordinate_text, topImageYData);
         topImageYCoordinate.textField.setTooltip(new Tooltip(positive_number_tooltip));
 
         HBox topImageHeightAndOpacityHBox = new HBox(default_spacing);
@@ -78,7 +76,7 @@ public class OverlayImageVBox extends VBox {
         progressVBox = new ProgressVBox();
         progressVBox.runButton.setOnAction(_ -> {
             try {
-                overlayImage(this);
+                overlayImage();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -90,18 +88,18 @@ public class OverlayImageVBox extends VBox {
         this.getChildren().addAll(formatChooserVBox, inputSelector, outputSelector, topImageSelector, topImageHeightAndOpacityHBox, topImageCoordinateHBox, progressVBox);
     }
 
-    public void overlayImage(OverlayImageVBox overlayImageVBox) {
+    public void overlayImage() {
 
-        String imgPath = overlayImageVBox.topImageSelector.textField.getText();
-        String outputPath = overlayImageVBox.outputSelector.textField.getText();
-        String expectedType = overlayImageVBox.formatChooserVBox.fileFormatCombo.getValue();
-        String expectedName = overlayImageVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = overlayImageVBox.formatChooserVBox.startIndex.textField.getText();
-        String topImageHeight = overlayImageVBox.topImageHeight.textField.getText();
-        String topImageOpacity = overlayImageVBox.topImageOpacity.textField.getText();
-        String topImageX = overlayImageVBox.topImageXCoordinate.textField.getText();
-        String topImageY = overlayImageVBox.topImageYCoordinate.textField.getText();
-        List<File> files = overlayImageVBox.inputSelector.fileList;
+        String imgPath = this.topImageSelector.getText();
+        String outputPath = this.outputSelector.getText();
+        String expectedType = this.formatChooserVBox.getFileFormat();
+        String expectedName = this.formatChooserVBox.getNameFormat();
+        String expectedStartIndex = this.formatChooserVBox.getStartIndex();
+        String topImageHeight = this.topImageHeight.getText();
+        String topImageOpacity = this.topImageOpacity.getText();
+        String topImageX = this.topImageXCoordinate.getText();
+        String topImageY = this.topImageYCoordinate.getText();
+        List<File> files = this.inputSelector.fileList;
 
         Task<Void> task = new Task<>() {
             @Override
@@ -153,17 +151,11 @@ public class OverlayImageVBox extends VBox {
 
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
-                List<File> fileList = filterFiles(files);
 
-                if (fileList.isEmpty()) {
-                    updateMessage("Found no file in the input folder");
-                    return null;
-                }
-
-                for (int i = 0; i < fileList.size(); i++) {
-                    updateProgress(i, fileList.size());
-                    updateMessage(i + "/" + fileList.size());
-                    File file = fileList.get(i);
+                for (int i = 0; i < files.size(); i++) {
+                    updateProgress(i, files.size());
+                    updateMessage(i + "/" + files.size());
+                    File file = files.get(i);
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         BufferedImage topImage = ImageIO.read(imgFile);

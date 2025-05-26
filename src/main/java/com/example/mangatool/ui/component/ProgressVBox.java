@@ -1,6 +1,6 @@
-package com.example.mangatool.MinorUI;
+package com.example.mangatool.ui.component;
 
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.TextConfig.*;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

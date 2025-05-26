@@ -1,9 +1,12 @@
-package com.example.mangatool.UI;
+package com.example.mangatool.ui;
 
-import static com.example.mangatool.AppFunction.*;
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-import com.example.mangatool.MinorUI.*;
+import com.example.mangatool.ui.component.FolderChooser;
+import com.example.mangatool.ui.component.FormatChooserVBox;
+import com.example.mangatool.ui.component.ImagesListChooser;
+import com.example.mangatool.ui.component.ProgressVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,20 +18,20 @@ import java.io.File;
 import java.util.List;
 
 
-public class RenameVBox extends VBox {
+public class RenameImage extends VBox {
 
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public ImagesListChooser inputSelector;
     public FolderChooser outputSelector;
 
-    public RenameVBox() {
+    public RenameImage() {
 
         formatChooserVBox = new FormatChooserVBox();
         progressVBox = new ProgressVBox();
         inputSelector = new ImagesListChooser(input_file_list_text);
         outputSelector = new FolderChooser(output_path_text);
-        progressVBox.runButton.setOnAction(_ -> renameFileList(this));
+        progressVBox.runButton.setOnAction(_ -> renameImages());
 
         this.getChildren().addAll(formatChooserVBox, inputSelector, outputSelector, progressVBox);
         this.setSpacing(default_spacing);
@@ -37,18 +40,23 @@ public class RenameVBox extends VBox {
         this.setAlignment(Pos.TOP_CENTER);
     }
 
-    public void renameFileList(RenameVBox renameVBox) {
+    private void renameImages() {
 
-        String outputPath = renameVBox.outputSelector.textField.getText();
-        String expectedType = renameVBox.formatChooserVBox.fileFormatCombo.getValue();
-        String expectedName = renameVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = renameVBox.formatChooserVBox.startIndex.textField.getText();
-        List<File> files = renameVBox.inputSelector.fileList;
+        String outputPath = this.outputSelector.getText();
+        String expectedType = this.formatChooserVBox.getFileFormat();
+        String expectedName = this.formatChooserVBox.getNameFormat();
+        String expectedStartIndex = this.formatChooserVBox.getStartIndex();
+        List<File> files = this.inputSelector.fileList;
 
         Task<Void> task = new Task<>() {
 
             @Override
             protected Void call() {
+
+                if (outputPath.isEmpty()) {
+                    updateMessage("Please choose output path");
+                    return null;
+                }
 
                 if (!isPositiveInteger(expectedStartIndex)) {
                     updateMessage("Please choose expected start index");
@@ -58,21 +66,15 @@ public class RenameVBox extends VBox {
                 counter = Integer.parseInt(expectedStartIndex);
 
                 if (files.isEmpty()) {
-                    updateMessage("No files had been chosen");
+                    updateMessage("No images had been chosen");
                     return null;
                 }
 
-                List<File> fileList = filterFiles(files);
 
-                if (fileList.isEmpty()) {
-                    updateMessage("Found no image file");
-                    return null;
-                }
-
-                for (int i = 0;i < fileList.size();i++) {
-                    updateProgress(i, fileList.size());
-                    updateMessage(i + "/" + fileList.size());
-                    File file = fileList.get(i);
+                for (int i = 0;i < files.size();i++) {
+                    updateProgress(i, files.size());
+                    updateMessage(i + "/" + files.size());
+                    File file = files.get(i);
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         String imagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
@@ -81,7 +83,6 @@ public class RenameVBox extends VBox {
                         System.out.println("Image renamed successfully: " + file.getName());
                     } catch (Exception exception) {
                         System.err.println("Error processing image: " + file.getName());
-                        exception.printStackTrace();
                     }
                 }
                 updateProgress(100, 100);

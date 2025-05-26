@@ -1,9 +1,9 @@
-package com.example.mangatool.UI;
+package com.example.mangatool.ui;
 
 
-import com.example.mangatool.MinorUI.FolderChooser;
-import com.example.mangatool.MinorUI.FormatChooserVBox;
-import com.example.mangatool.MinorUI.ProgressVBox;
+import com.example.mangatool.ui.component.FolderChooser;
+import com.example.mangatool.ui.component.FormatChooserVBox;
+import com.example.mangatool.ui.component.ProgressVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -24,10 +24,10 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
-import static com.example.mangatool.TextConfig.*;
-import static com.example.mangatool.AppFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
 
-public class ImageSplitMultilPartVBox extends VBox {
+public class SplitImageToMultiPart extends VBox {
 
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
@@ -38,10 +38,10 @@ public class ImageSplitMultilPartVBox extends VBox {
     public double ratio;
     public List<Double> lineList;
 
-    public ImageSplitMultilPartVBox() {
+    public SplitImageToMultiPart() {
 
         progressVBox = new ProgressVBox();
-        progressVBox.runButton.setOnAction(_ -> splitImageMultiParts(this));
+        progressVBox.runButton.setOnAction(_ -> splitImageMultiParts());
 
         formatChooserVBox = new FormatChooserVBox();
         outputSelector = new FolderChooser(output_path_text);
@@ -130,12 +130,12 @@ public class ImageSplitMultilPartVBox extends VBox {
         return openImageButton;
     }
 
-    public void splitImageMultiParts(ImageSplitMultilPartVBox imageSplitMultilPartVBox) {
+    private void splitImageMultiParts() {
 
-        String outputPath = imageSplitMultilPartVBox.outputSelector.textField.getText();
-        String expectedType = imageSplitMultilPartVBox.formatChooserVBox.fileFormatCombo.getValue();
-        String expectedName = imageSplitMultilPartVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = imageSplitMultilPartVBox.formatChooserVBox.startIndex.textField.getText();
+        String outputPath = this.outputSelector.getText();
+        String expectedType = this.formatChooserVBox.getFileFormat();
+        String expectedName = this.formatChooserVBox.getNameFormat();
+        String expectedStartIndex = this.formatChooserVBox.getStartIndex();
 
         Task<Void> task = new Task<>() {
 

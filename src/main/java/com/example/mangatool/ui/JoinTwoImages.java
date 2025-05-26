@@ -1,13 +1,13 @@
-package com.example.mangatool.UI;
+package com.example.mangatool.ui;
 
 
-import static com.example.mangatool.AppFunction.*;
+import static com.example.mangatool.common.CommonFunction.*;
 
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-import com.example.mangatool.MinorUI.FileChooser;
-import com.example.mangatool.MinorUI.ProgressVBox;
-import com.example.mangatool.MinorUI.SmallTextFieldHBox;
+import com.example.mangatool.ui.component.FileChooser;
+import com.example.mangatool.ui.component.ProgressVBox;
+import com.example.mangatool.ui.component.SmallInputRow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -25,23 +25,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 
-public class JoinTwoImagesVBox extends VBox {
+public class JoinTwoImages extends VBox {
 
 
     public ProgressVBox progressVBox;
     public ComboBox<String> fileFormatCombo;
     public FileChooser firstImageSelector;
     public FileChooser secondImageSelector;
-    public SmallTextFieldHBox outFileName;
+    public SmallInputRow outFileName;
     public ComboBox<String> joinDirection;
 
 
 
-    public JoinTwoImagesVBox() {
+    public JoinTwoImages() {
 
-        ObservableList<String> formats = FXCollections.observableArrayList("jpg", "png", "bmp", "tiff", "webp");
-
-        fileFormatCombo = new ComboBox<>(formats);
+        fileFormatCombo = new ComboBox<>(images_format);
         fileFormatCombo.getSelectionModel().selectFirst();
         Text formatTitle = new Text(file_format_text);
 
@@ -54,7 +52,7 @@ public class JoinTwoImagesVBox extends VBox {
 
         firstImageSelector = new FileChooser(choose_image_text, images_file_extension_text, image_extensions);
         secondImageSelector = new FileChooser(choose_image_text, images_file_extension_text, image_extensions);
-        outFileName = new SmallTextFieldHBox(out_file_name_text);
+        outFileName = new SmallInputRow(out_file_name_text);
 
         Text joinDirectionTitle = new Text(join_direction_text);
         ObservableList<String> directions = FXCollections.observableArrayList("Horizontal", "Vertical");
@@ -76,7 +74,7 @@ public class JoinTwoImagesVBox extends VBox {
 
         progressVBox.runButton.setOnAction(_ -> {
             try {
-                joinImages(this);
+                joinImages();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -104,10 +102,10 @@ public class JoinTwoImagesVBox extends VBox {
     }
 
 
-    public void joinImages(JoinTwoImagesVBox joinTwoImagesVBox) {
-        String firstImagePath = joinTwoImagesVBox.firstImageSelector.textField.getText();
-        String secondImagePath = joinTwoImagesVBox.secondImageSelector.textField.getText();
-        String extension = joinTwoImagesVBox.fileFormatCombo.getValue();
+    private void joinImages() {
+        String firstImagePath = this.firstImageSelector.getText();
+        String secondImagePath = this.secondImageSelector.getText();
+        String extension = this.fileFormatCombo.getValue();
 
 
         Task<Void> task = new Task<>() {

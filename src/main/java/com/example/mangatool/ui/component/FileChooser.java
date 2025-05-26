@@ -1,13 +1,11 @@
-package com.example.mangatool.MinorUI;
-
-import com.example.mangatool.AbstractUI.TextFieldAndTwoButtonsHBox;
+package com.example.mangatool.ui.component;
 
 import java.util.List;
 
-import static com.example.mangatool.AppFunction.*;
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-public class FileChooser extends TextFieldAndTwoButtonsHBox {
+public class FileChooser extends InputActionRow {
     public FileChooser(String title, String extensionText, List<String> extensionList) {
         super(title, select_file_button_text, open_file_button_text);
         this.firstButton.setOnAction(_ -> {

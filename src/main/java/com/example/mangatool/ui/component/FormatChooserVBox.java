@@ -1,10 +1,8 @@
-package com.example.mangatool.MinorUI;
+package com.example.mangatool.ui.component;
 
-import static com.example.mangatool.AppFunction.*;
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -14,32 +12,31 @@ import javafx.scene.text.Text;
 
 public class FormatChooserVBox extends VBox {
 
-    public SmallTextFieldHBox startIndex;
+    public SmallInputRow startIndex;
     public ComboBox<String> fileFormatCombo;
     public ComboBox<String> nameFormatCombo;
 
     public FormatChooserVBox() {
-        ObservableList<String> formats = FXCollections.observableArrayList("jpg", "png", "bmp", "tiff", "webp");
-        ObservableList<String> nameFormats = FXCollections.observableArrayList("1", "2", "3", "4", "5");
 
-        this.fileFormatCombo = new ComboBox<>(formats);
+
+        this.fileFormatCombo = new ComboBox<>(images_format);
         this.fileFormatCombo.getSelectionModel().selectFirst();
 
-        this.nameFormatCombo = new ComboBox<>(nameFormats);
+        this.nameFormatCombo = new ComboBox<>(name_counter_formats);
         this.nameFormatCombo.getSelectionModel().select(2);
 
         Text formatTitle = new Text(file_format_text);
         Text nameFormatTitle = new Text(name_format_text);
         Text startIndexTitle = new Text(start_index_text);
-        startIndex = new SmallTextFieldHBox(start_index_text, "0");
+        startIndex = new SmallInputRow(start_index_text, "0");
         startIndex.textField.setTooltip(new Tooltip(positive_number_tooltip));
 
         Text formatNotification = new Text();
         formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText()));
 
-        fileFormatCombo.setOnAction(e -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText())));
-        nameFormatCombo.setOnAction(e -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText())));
-        startIndex.textField.setOnKeyTyped(e -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText())));
+        fileFormatCombo.setOnAction(_ -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText())));
+        nameFormatCombo.setOnAction(_ -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText())));
+        startIndex.textField.setOnKeyTyped(_ -> formatNotification.setText(setTextFormatNotification(nameFormatCombo.getValue(), fileFormatCombo.getValue(), startIndex.textField.getText())));
 
 
         HBox hBoxChooseFormat = new HBox(default_spacing);
@@ -70,6 +67,18 @@ public class FormatChooserVBox extends VBox {
         res = "Your file will be save as " + String.format("%0" + nameFormat + "d", formatCounter) + "." + fileFormat + ", " + String.format("%0" + nameFormat + "d", formatCounter + 1) + "." + fileFormat + ", etc.";
 
         return res;
+    }
+
+    public String getNameFormat() {
+        return this.nameFormatCombo.getValue();
+    }
+
+    public String getFileFormat() {
+        return this.fileFormatCombo.getValue();
+    }
+
+    public String getStartIndex() {
+        return this.startIndex.getText();
     }
 
 }

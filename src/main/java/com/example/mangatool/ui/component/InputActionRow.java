@@ -1,4 +1,4 @@
-package com.example.mangatool.AbstractUI;
+package com.example.mangatool.ui.component;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,14 +7,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-public abstract class TextFieldAndTwoButtonsHBox extends HBox {
+public class InputActionRow extends HBox {
     public TextField textField;
     public Button firstButton;
     public Button secondButton;
 
-    public TextFieldAndTwoButtonsHBox(String title, String firstButtonTitle, String secondButtonTitle) {
+    public InputActionRow(String title, String firstButtonTitle, String secondButtonTitle) {
 
         Text titleText = new Text(title);
 
@@ -30,4 +30,9 @@ public abstract class TextFieldAndTwoButtonsHBox extends HBox {
         this.getChildren().addAll(titleText, this.textField, firstButton, secondButton);
 
     }
+
+    public String getText() {
+        return this.textField.getText();
+    }
+
 }

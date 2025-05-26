@@ -14,8 +14,10 @@ module com.example.mangatool {
 
     opens com.example.mangatool to javafx.fxml;
     exports com.example.mangatool;
-    exports com.example.mangatool.UI;
-    opens com.example.mangatool.UI to javafx.fxml;
-    exports com.example.mangatool.MinorUI;
-    opens com.example.mangatool.MinorUI to javafx.fxml;
+    exports com.example.mangatool.ui;
+    opens com.example.mangatool.ui to javafx.fxml;
+    exports com.example.mangatool.ui.component;
+    opens com.example.mangatool.ui.component to javafx.fxml;
+    exports com.example.mangatool.common;
+    opens com.example.mangatool.common to javafx.fxml;
 }

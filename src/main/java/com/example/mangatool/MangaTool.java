@@ -1,7 +1,7 @@
 package com.example.mangatool;
 
-import com.example.mangatool.MinorUI.MenuBarVBox;
-import com.example.mangatool.UI.*;
+import com.example.mangatool.ui.component.MenuBarVBox;
+import com.example.mangatool.ui.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,14 +16,14 @@ public class MangaTool extends Application {
 
         primaryStage.setTitle("Manga Tool");
 
-        ImageSplitVBox imageSplitVBox = new ImageSplitVBox();
-        CropByPixelVBox cropByPixelVBox = new CropByPixelVBox();
-        RenameVBox renameVBox = new RenameVBox();
-        ToGrayScaleVBox toGrayScaleVBox = new ToGrayScaleVBox();
-        OverlayImageVBox overlayImageVBox = new OverlayImageVBox();
-        JoinTwoImagesVBox joinTwoImagesVBox = new JoinTwoImagesVBox();
-        ImageSplitMultilPartVBox imageSplitMultilPartVBox = new ImageSplitMultilPartVBox();
-        PdfToImagesVBox pdfToImagesVBox = new PdfToImagesVBox();
+        SplitImageInHalf splitImageInHalf = new SplitImageInHalf();
+        CropImage cropImage = new CropImage();
+        RenameImage renameImage = new RenameImage();
+        ToGrayScaleImage toGrayScaleImage = new ToGrayScaleImage();
+        OverlayImage overlayImage = new OverlayImage();
+        JoinTwoImages joinTwoImages = new JoinTwoImages();
+        SplitImageToMultiPart splitImageToMultiPart = new SplitImageToMultiPart();
+        PdfToImage pdfToImage = new PdfToImage();
 
 
         TabPane tabPane = new TabPane();
@@ -48,14 +48,14 @@ public class MangaTool extends Application {
 
         tabPane.getTabs().addAll(splitTab, cropTab, renameFilesListTab, toGrayScaleTab, overlayImageTab, joinImagesTab, imageSplitMultiPartTab, pdfToImagesTab);
 
-        splitTab.setContent(imageSplitVBox);
-        cropTab.setContent(cropByPixelVBox);
-        renameFilesListTab.setContent(renameVBox);
-        toGrayScaleTab.setContent(toGrayScaleVBox);
-        overlayImageTab.setContent(overlayImageVBox);
-        joinImagesTab.setContent(joinTwoImagesVBox);
-        imageSplitMultiPartTab.setContent(imageSplitMultilPartVBox);
-        pdfToImagesTab.setContent(pdfToImagesVBox);
+        splitTab.setContent(splitImageInHalf);
+        cropTab.setContent(cropImage);
+        renameFilesListTab.setContent(renameImage);
+        toGrayScaleTab.setContent(toGrayScaleImage);
+        overlayImageTab.setContent(overlayImage);
+        joinImagesTab.setContent(joinTwoImages);
+        imageSplitMultiPartTab.setContent(splitImageToMultiPart);
+        pdfToImagesTab.setContent(pdfToImage);
 
         VBox screen = new VBox();
 

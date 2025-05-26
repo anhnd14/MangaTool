@@ -1,9 +1,12 @@
-package com.example.mangatool.UI;
+package com.example.mangatool.ui;
 
-import static com.example.mangatool.TextConfig.*;
-import static com.example.mangatool.AppFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
 
-import com.example.mangatool.MinorUI.*;
+import com.example.mangatool.ui.component.FileChooser;
+import com.example.mangatool.ui.component.FolderChooser;
+import com.example.mangatool.ui.component.FormatChooserVBox;
+import com.example.mangatool.ui.component.ProgressVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,20 +18,20 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class PdfToImagesVBox extends VBox {
+public class PdfToImage extends VBox {
     public FileChooser inputSelector;
     public FolderChooser outputSelector;
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
 
-    public PdfToImagesVBox() {
+    public PdfToImage() {
         progressVBox = new ProgressVBox();
         formatChooserVBox = new FormatChooserVBox();
         inputSelector = new FileChooser(choose_file_text, pdf_file_extension_text, pdf_extensions);
         outputSelector = new FolderChooser(output_path_text);
         progressVBox.runButton.setOnAction(_ -> {
             try {
-                formatPdfToImages(this);
+                formatPdfToImages();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -43,13 +46,12 @@ public class PdfToImagesVBox extends VBox {
 
     }
 
-    private void formatPdfToImages(PdfToImagesVBox pdfToImagesVBox) {
-        String inputFilePath = pdfToImagesVBox.inputSelector.textField.getText();
-        String outputPath = pdfToImagesVBox.outputSelector.textField.getText();
-        String expectedType = pdfToImagesVBox.formatChooserVBox.fileFormatCombo.getValue();
-        String expectedName = pdfToImagesVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = pdfToImagesVBox.formatChooserVBox.startIndex.textField.getText();
-
+    private void formatPdfToImages() {
+        String inputFilePath = this.inputSelector.getText();
+        String outputPath = this.outputSelector.getText();
+        String expectedType = this.formatChooserVBox.getFileFormat();
+        String expectedName = this.formatChooserVBox.getNameFormat();
+        String expectedStartIndex = this.formatChooserVBox.getStartIndex();
 
         Task<Void> task = new Task<>() {
             @Override

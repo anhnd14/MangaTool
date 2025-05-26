@@ -1,4 +1,4 @@
-package com.example.mangatool.MinorUI;
+package com.example.mangatool.ui.component;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -18,23 +18,13 @@ public class MenuBarVBox extends VBox {
 
         menuBar.getMenus().addAll(fileMenu, settingMenu);
 
-        fileMenu.setOnShowing(e -> {
-            System.out.println("Showing File Menu");
-        });
-        fileMenu.setOnHiding(e -> {
-            System.out.println("Hiding File Menu");
-        });
-
-        settingMenu.setOnShowing(e -> {
-            System.out.println("Showing File Menu");
-        });
-        settingMenu.setOnHiding(e -> {
-            System.out.println("Hiding File Menu");
-        });
+        fileMenu.setOnShowing(_ -> System.out.println("Showing File Menu"));
+        fileMenu.setOnHiding(_ -> System.out.println("Hiding File Menu"));
+        settingMenu.setOnShowing(_ -> System.out.println("Showing File Menu"));
+        settingMenu.setOnHiding(_ -> System.out.println("Hiding File Menu"));
 
         closeMenuItem = new MenuItem("Close");
         reloadMenuItem = new MenuItem("Reload");
-
         fileMenu.getItems().addAll(closeMenuItem, reloadMenuItem);
 
         settingMenuItem = new MenuItem("Setting");

@@ -1,15 +1,13 @@
-package com.example.mangatool.MinorUI;
-
-import com.example.mangatool.AbstractUI.TextFieldAndTwoButtonsHBox;
+package com.example.mangatool.ui.component;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.mangatool.AppFunction.*;
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.CommonFunction.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-public class ImagesListChooser extends TextFieldAndTwoButtonsHBox {
+public class ImagesListChooser extends InputActionRow {
     public List<File> fileList;
     public String inputFolderPath;
 

@@ -1,26 +1,27 @@
-package com.example.mangatool.UI;
+package com.example.mangatool.ui;
 
-import static com.example.mangatool.TextConfig.*;
+import static com.example.mangatool.common.TextConfig.*;
 
-import com.example.mangatool.MinorUI.*;
+import com.example.mangatool.ui.component.FolderChooser;
+import com.example.mangatool.ui.component.FormatChooserVBox;
+import com.example.mangatool.ui.component.ImagesListChooser;
+import com.example.mangatool.ui.component.ProgressVBox;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
-import static com.example.mangatool.AppFunction.*;
-
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.example.mangatool.common.CommonFunction.*;
 
-public class ImageSplitVBox extends VBox {
-
-
+public class ToGrayScaleImage extends VBox {
     public ProgressVBox progressVBox;
     public FormatChooserVBox formatChooserVBox;
     public ImagesListChooser inputSelector;
@@ -29,16 +30,14 @@ public class ImageSplitVBox extends VBox {
 
 
 
-    public ImageSplitVBox() {
-
+    public ToGrayScaleImage() {
         formatChooserVBox = new FormatChooserVBox();
         inputSelector = new ImagesListChooser(input_file_list_text);
         outputSelector = new FolderChooser(output_path_text);
         progressVBox = new ProgressVBox();
-
         progressVBox.runButton.setOnAction(_ -> {
             try {
-                splitImage(this);
+                toGrayScale();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -51,14 +50,13 @@ public class ImageSplitVBox extends VBox {
         this.setAlignment(Pos.TOP_CENTER);
     }
 
-
-    public void splitImage(ImageSplitVBox imageSplitVBox) {
-        String outputPath = imageSplitVBox.outputSelector.textField.getText();
-        String expectedType = imageSplitVBox.formatChooserVBox.fileFormatCombo.getValue();
-        String expectedName = imageSplitVBox.formatChooserVBox.nameFormatCombo.getValue();
-        String expectedStartIndex = imageSplitVBox.formatChooserVBox.startIndex.textField.getText();
-        List<File> files = imageSplitVBox.inputSelector.fileList;
-
+    private void toGrayScale() {
+        String inputPath = this.inputSelector.getText();
+        String outputPath = this.outputSelector.getText();
+        String expectedType = this.formatChooserVBox.getFileFormat();
+        String expectedName = this.formatChooserVBox.getNameFormat();
+        String expectedStartIndex = this.formatChooserVBox.getStartIndex();
+        List<File> files = this.inputSelector.fileList;
 
         Task<Void> task = new Task<>() {
 
@@ -66,11 +64,11 @@ public class ImageSplitVBox extends VBox {
             protected Void call() {
 
 
-                if (outputPath.isEmpty()) {
+                if (inputPath.isEmpty() || outputPath.isEmpty()) {
                     updateMessage("Please choose input path and output path");
                     return null;
                 }
-                if (!Files.isDirectory(Paths.get(outputPath))) {
+                if (!Files.isDirectory(Paths.get(inputPath)) || !Files.isDirectory(Paths.get(outputPath))) {
                     updateMessage("Please choose valid input path and output path");
                     return null;
                 }
@@ -78,48 +76,38 @@ public class ImageSplitVBox extends VBox {
                     updateMessage("Please choose expected start index");
                     return null;
                 }
-
-                if (files == null) {
+                if (files.isEmpty()) {
                     updateMessage("Found no image file in the input folder");
                     return null;
                 }
 
                 int counter;
                 counter = Integer.parseInt(expectedStartIndex);
-                List<File> fileList = filterFiles(files);
 
-                if (fileList.isEmpty()) {
-                    updateMessage("Found no image file in the input folder");
-                    return null;
-                }
-
-                for (int i = 0; i < fileList.size(); i++) {
-                    updateProgress(i, fileList.size());
-                    updateMessage(i + "/" + fileList.size());
-                    File file = fileList.get(i);
+                for (int i = 0; i < files.size(); i++) {
+                    updateProgress(i, files.size());
+                    updateMessage(i + "/" + files.size());
+                    File file = files.get(i);
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
-                        if (file.getName().contains("-full")) {
+                        if (file.getName().contains("-color")) {
                             String imagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                             counter += 1;
                             saveImage(originalImage, imagePath, expectedType);
-                            System.out.println("Full image save successfully: " + file.getName());
+                            System.out.println("Color image save successfully: " + file.getName());
                         } else {
-                            int width = originalImage.getWidth();
-                            int height = originalImage.getHeight();
+                            BufferedImage res = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                            Graphics g = res.getGraphics();
+                            g.drawImage(originalImage, 0, 0, null);
+                            g.dispose();
 
-                            BufferedImage leftHalf = originalImage.getSubimage(0, 0, width / 2, height);
-                            BufferedImage rightHalf = originalImage.getSubimage(width / 2, 0, width / 2, height);
 
-                            String rightImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
-                            counter += 1;
-                            String leftImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
+                            String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                             counter += 1;
 
-                            saveImage(rightHalf, rightImagePath, expectedType);
-                            saveImage(leftHalf, leftImagePath, expectedType);
+                            saveImage(res, outImagePath, expectedType);
 
-                            System.out.println("Image split successfully: " + file.getName());
+                            System.out.println("Image to grayscale successfully: " + file.getName());
                         }
                     } catch (Exception exception) {
                         System.err.println("Error processing image: " + file.getName());
