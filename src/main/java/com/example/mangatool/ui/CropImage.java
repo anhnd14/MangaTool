@@ -131,8 +131,16 @@ public class CropImage extends VBox {
                     updateProgress(i, files.size());
                     updateMessage(i + "/" + files.size());
                     File file = files.get(i);
+
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
+
+                        if ((top + bottom) > originalImage.getHeight() || (left + right) > originalImage.getWidth()) {
+                            updateMessage("Crop size is larger than image size");
+                            Thread.sleep(100);
+                            continue;
+                        }
+
                         BufferedImage resImage;
                         resImage = originalImage.getSubimage(left, top, originalImage.getWidth() - left - right, originalImage.getHeight() - top - bottom);
 
@@ -141,7 +149,7 @@ public class CropImage extends VBox {
                         saveImage(resImage, outImagePath, expectedType);
                         System.out.println("Full image save successfully: " + file.getName());
 
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         System.err.println("Error processing image: " + file.getName());
                         e.printStackTrace();
                     }

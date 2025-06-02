@@ -12,7 +12,6 @@ public class TextConfig {
     //properties
     public static final String FILENAME = "app.properties";
 
-
     //text, title cho text field
     public static String file_format_text = "Choose File Format:";
     public static String name_format_text = "Choose Name Format:";

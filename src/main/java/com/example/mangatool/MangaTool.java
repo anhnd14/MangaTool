@@ -24,6 +24,7 @@ public class MangaTool extends Application {
         JoinTwoImages joinTwoImages = new JoinTwoImages();
         SplitImageToMultiPart splitImageToMultiPart = new SplitImageToMultiPart();
         PdfToImage pdfToImage = new PdfToImage();
+        ResizeImage resizeImage = new ResizeImage();
 
 
         TabPane tabPane = new TabPane();
@@ -35,6 +36,7 @@ public class MangaTool extends Application {
         Tab joinImagesTab = new Tab("Join Images", new Label("Join Images"));
         Tab imageSplitMultiPartTab = new Tab("Split Images", new Label("Split Images"));
         Tab pdfToImagesTab = new Tab("PDF to Images", new Label("PDF to Images"));
+        Tab resizeImagesTab = new Tab("Resize Images", new Label("Resize Images"));
 
 
         splitTab.setClosable(false);
@@ -45,8 +47,9 @@ public class MangaTool extends Application {
         joinImagesTab.setClosable(false);
         imageSplitMultiPartTab.setClosable(false);
         pdfToImagesTab.setClosable(false);
+        resizeImagesTab.setClosable(false);
 
-        tabPane.getTabs().addAll(splitTab, cropTab, renameFilesListTab, toGrayScaleTab, overlayImageTab, joinImagesTab, imageSplitMultiPartTab, pdfToImagesTab);
+        tabPane.getTabs().addAll(splitTab, cropTab, renameFilesListTab, toGrayScaleTab, overlayImageTab, joinImagesTab, imageSplitMultiPartTab, pdfToImagesTab, resizeImagesTab);
 
         splitTab.setContent(splitImageInHalf);
         cropTab.setContent(cropImage);
@@ -56,6 +59,7 @@ public class MangaTool extends Application {
         joinImagesTab.setContent(joinTwoImages);
         imageSplitMultiPartTab.setContent(splitImageToMultiPart);
         pdfToImagesTab.setContent(pdfToImage);
+        resizeImagesTab.setContent(resizeImage);
 
         VBox screen = new VBox();
 

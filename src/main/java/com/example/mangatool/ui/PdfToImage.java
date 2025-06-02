@@ -29,13 +29,7 @@ public class PdfToImage extends VBox {
         formatChooserVBox = new FormatChooserVBox();
         inputSelector = new FileChooser(choose_file_text, pdf_file_extension_text, pdf_extensions);
         outputSelector = new FolderChooser(output_path_text);
-        progressVBox.runButton.setOnAction(_ -> {
-            try {
-                formatPdfToImages();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        progressVBox.runButton.setOnAction(_ -> formatPdfToImages());
 
         this.getChildren().addAll(formatChooserVBox, inputSelector, outputSelector, progressVBox);
         this.setAlignment(Pos.TOP_CENTER);
@@ -82,11 +76,12 @@ public class PdfToImage extends VBox {
                     return null;
                 }
 
-                PDDocument pdDocument = null;
+                PDDocument pdDocument;
                 try {
                     pdDocument = PDDocument.load(pdfFile);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    updateMessage("Có lỗi load file, kiểm tra lại file pdf");
+                    return null;
                 }
                 if (pdDocument == null) {
                     updateMessage("Có lỗi chuyển đổi file, kiểm tra lại file pdf");
@@ -102,7 +97,7 @@ public class PdfToImage extends VBox {
                     updateMessage(i + "/" + pagesNumber);
 
                     try {
-                        BufferedImage resImage = pdfRenderer.renderImage(i);
+                        BufferedImage resImage = pdfRenderer.renderImage(i, 2.0F);
 
                         String outImagePath = outputPath + File.separator + String.format("%0" + expectedName + "d", counter) + "." + expectedType;
                         counter += 1;
@@ -111,7 +106,6 @@ public class PdfToImage extends VBox {
 
                     } catch (IOException e) {
                         System.err.println("Error processing image. Index: " + i);
-                        e.printStackTrace();
                     }
                 }
                 updateProgress(100, 100);

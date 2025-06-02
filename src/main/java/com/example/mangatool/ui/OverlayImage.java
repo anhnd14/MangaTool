@@ -166,7 +166,8 @@ public class OverlayImage extends VBox {
                         g.drawImage(originalImage, 0, 0, null);
 
                         double ratio = ((double) topImage.getWidth()) / topImage.getHeight();
-                        int thisTopImageWidth = (int) (ratio * thisTopImageHeight);
+                        double thisTopImageWidthDouble =  ratio * thisTopImageHeight;
+                        int thisTopImageWidth = (int) thisTopImageWidthDouble;
 
                         //originalImageWidth-thisTopImageWidth
 
